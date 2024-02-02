@@ -1,9 +1,8 @@
 import sys
 import cv2
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout
-
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
@@ -39,16 +38,19 @@ class MainWindow(QMainWindow):
         self.video_display = VideoDisplay(self)
         self.start_stop_button = QPushButton("Start/Stop Inspection", self)
         self.load_model_button = QPushButton("Load new Model", self)
+        self.exit_button = QPushButton(QIcon.fromTheme('SP_TitleBarCloseButton'), 'Exit', self)
 
         # Set the button sizes and styles
         button_size = 150
         self.start_stop_button.setFixedSize(button_size, button_size)
         self.load_model_button.setFixedSize(button_size, button_size)
+        self.exit_button.setFixedSize(button_size, button_size)
 
         # Create a horizontal layout for the buttons
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.start_stop_button)
         button_layout.addWidget(self.load_model_button)
+        button_layout.addWidget(self.exit_button)
 
         # Create a vertical layout for the central widget
         layout = QVBoxLayout(self.central_widget)
@@ -57,6 +59,7 @@ class MainWindow(QMainWindow):
 
         self.start_stop_button.clicked.connect(self.start_stop_inspection)
         self.load_model_button.clicked.connect(self.load_new_model)
+        self.exit_button.clicked.connect(self.close_application)
 
     def start_stop_inspection(self):
         # Placeholder for inspection logic
@@ -65,6 +68,9 @@ class MainWindow(QMainWindow):
     def load_new_model(self):
         # Placeholder for model loading logic
         print("Load new Model button clicked")
+
+    def close_application(self):
+        self.close()
 
     def resizeEvent(self, event):
         self.setGeometry(0, 0, 1920, 1080)  # Set the window size to 1920x1080
