@@ -39,10 +39,20 @@ class MainWindow(QMainWindow):
         self.start_stop_button = QPushButton("Start/Stop Inspection", self)
         self.load_model_button = QPushButton("Load new Model", self)
 
+        # Set the button sizes and styles
+        button_size = 150
+        self.start_stop_button.setFixedSize(button_size, button_size)
+        self.load_model_button.setFixedSize(button_size, button_size)
+
+        # Create a horizontal layout for the buttons
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.start_stop_button)
+        button_layout.addWidget(self.load_model_button)
+
+        # Create a vertical layout for the central widget
         layout = QVBoxLayout(self.central_widget)
         layout.addWidget(self.video_display, 1)
-        layout.addWidget(self.start_stop_button)
-        layout.addWidget(self.load_model_button)
+        layout.addLayout(button_layout)
 
         self.start_stop_button.clicked.connect(self.start_stop_inspection)
         self.load_model_button.clicked.connect(self.load_new_model)
