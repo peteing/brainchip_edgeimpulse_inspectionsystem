@@ -2,7 +2,7 @@ import sys
 import cv2
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QDesktopWidget
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
@@ -55,10 +55,14 @@ class MainWindow(QMainWindow):
         # Placeholder for model loading logic
         print("Load new Model button clicked")
 
+    def resizeEvent(self, event):
+        desktop = QDesktopWidget()
+        rect = desktop.availableGeometry(self)
+        self.setGeometry(rect)
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.setGeometry(100, 100, 800, 600)
     window.setWindowTitle("OpenCV PyQt5 Application")
-    window.show()
+    window.showMaximized()  # Open the window maximized
     sys.exit(app.exec_())
