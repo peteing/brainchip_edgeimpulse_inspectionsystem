@@ -63,7 +63,8 @@ class MainWindow(QMainWindow):
 
         self.video_display = VideoDisplay(self)
         self.start_stop_button = QPushButton("Start/Stop Inspection", self)
-        self.load_model_button = QPushButton("Load Object Detection Model", self)
+        self.load_detection_model_button = QPushButton("Load Object Detection Model", self)
+        self.load_classification_model_button = QPushButton("Load Classification Model", self)
         self.exit_button = QPushButton(QIcon.fromTheme('SP_TitleBarCloseButton'), 'Exit', self)
         self.stats_group_box = QGroupBox("Statistics and Diagnostics", self)
         self.stats_label = QLabel("No statistics available", self)
@@ -76,13 +77,15 @@ class MainWindow(QMainWindow):
         # Set the button sizes and styles
         button_size = 150
         self.start_stop_button.setFixedSize(button_size, button_size)
-        self.load_model_button.setFixedSize(button_size, button_size)
+        self.load_detection_model_button.setFixedSize(button_size, button_size)
+        self.load_classification_model_button.setFixedSize(button_size, button_size)
         self.exit_button.setFixedSize(button_size, button_size)
 
         # Create layouts
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.start_stop_button)
-        button_layout.addWidget(self.load_model_button)
+        button_layout.addWidget(self.load_detection_model_button)
+        button_layout.addWidget(self.load_classification_model_button)
         button_layout.addWidget(self.exit_button)
 
         stats_layout = QVBoxLayout(self.stats_group_box)
@@ -105,25 +108,32 @@ class MainWindow(QMainWindow):
 
         # Connect signals
         self.start_stop_button.clicked.connect(self.toggle_inspection)
-        self.load_model_button.clicked.connect(self.load_object_detection_model)
+        self.load_detection_model_button.clicked.connect(self.load_object_detection_model)
+        self.load_classification_model_button.clicked.connect(self.load_classification_model)
         self.exit_button.clicked.connect(self.close_application)
 
     def toggle_inspection(self):
         self.video_display.inspection_enabled = not self.video_display.inspection_enabled
 
     def load_object_detection_model(self):
+        self.load_model("objdetection.fbz")
+
+    def load_classification_model(self):
+        self.load_model("classifier.fbz")
+
+    def load_model(self, model_name):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         file_dialog = QFileDialog(self, options=options)
         file_dialog.setNameFilter("FBZ Models (*.fbz)")
-        file_dialog.setWindowTitle("Select Object Detection Model")
+        file_dialog.setWindowTitle(f"Select {model_name} Model")
 
         if file_dialog.exec_():
             model_files = file_dialog.selectedFiles()
 
             if model_files:
                 model_path = model_files[0]
-                self.save_model(model_path, "objdetection.fbz")
+                self.save_model(model_path, model_name)
 
     def save_model(self, source_path, destination_name):
         models_folder = "models"
