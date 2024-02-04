@@ -4,6 +4,39 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox
 
+class CustomLoadModelDialog(QDialog):
+    def __init__(self, parent=None):
+        super(CustomLoadModelDialog, self).__init__(parent)
+
+        self.init_ui()
+
+    def init_ui(self):
+        self.setWindowTitle("Upload Models")
+
+        model1_button = QPushButton("Model 1", self)
+        model2_button = QPushButton("Model 2", self)
+        done_button = QPushButton("Done", self)
+
+        model1_button.clicked.connect(self.upload_model1)
+        model2_button.clicked.connect(self.upload_model2)
+        done_button.clicked.connect(self.accept)  # Close the dialog when "Done" is clicked
+
+        layout = QVBoxLayout()
+        layout.addWidget(model1_button)
+        layout.addWidget(model2_button)
+        layout.addWidget(done_button)
+
+        self.setLayout(layout)
+
+    def upload_model1(self):
+        self.selected_model = 1
+        self.accept()
+
+    def upload_model2(self):
+        self.selected_model = 2
+        self.accept()
+
+
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
         super(VideoDisplay, self).__init__(parent)
@@ -147,6 +180,16 @@ class MainWindow(QMainWindow):
         except Exception as e:
             QMessageBox.warning(self, "Error", f"Failed to upload models: {str(e)}", QMessageBox.Ok)
 
+    def load_new_model(self):
+        custom_dialog = CustomLoadModelDialog(self)
+
+        if custom_dialog.exec_() == QDialog.Accepted:
+            selected_model = custom_dialog.selected_model
+
+            if selected_model == 1 or selected_model == 2:
+                self.upload_models(f"model{selected_model}.fbz")
+
+    
     def close_application(self):
         self.close()
 
