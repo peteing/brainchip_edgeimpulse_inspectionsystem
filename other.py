@@ -4,10 +4,6 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QCheckBox, QFileDialog, QMessageBox
 
-# Global variables
-mode_objdet = False
-mode_classify = False
-
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
         super(VideoDisplay, self).__init__(parent)
@@ -113,18 +109,16 @@ class MainWindow(QMainWindow):
         buttons_stats_layout = QHBoxLayout()
         buttons_stats_layout.addLayout(button_layout)
         buttons_stats_layout.addWidget(self.stats_group_box)
-        buttons_stats_layout.addWidget(self.mode_group_box)
 
         main_layout.addLayout(buttons_stats_layout)
         main_layout.addWidget(self.output_group_box)
+        main_layout.addWidget(self.mode_group_box)
 
         # Connect signals
         self.start_stop_button.clicked.connect(self.toggle_inspection)
         self.load_detection_model_button.clicked.connect(self.load_new_model)
         self.load_classification_model_button.clicked.connect(self.load_new_classification_model)
         self.exit_button.clicked.connect(self.close_application)
-        self.object_detection_checkbox.stateChanged.connect(self.update_objdet_mode)
-        self.classification_checkbox.stateChanged.connect(self.update_classify_mode)
 
     def toggle_inspection(self):
         self.video_display.inspection_enabled = not self.video_display.inspection_enabled
@@ -171,16 +165,6 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, "Model Uploaded", "Model uploaded successfully.", QMessageBox.Ok)
         except Exception as e:
             QMessageBox.warning(self, "Error", f"Failed to upload model: {str(e)}", QMessageBox.Ok)
-
-    def update_objdet_mode(self, state):
-        global mode_objdet
-        mode_objdet = state == Qt.Checked
-        print("Object Detection Mode:", mode_objdet)
-
-    def update_classify_mode(self, state):
-        global mode_classify
-        mode_classify = state == Qt.Checked
-        print("Classification Mode:", mode_classify)
 
     def close_application(self):
         self.close()
