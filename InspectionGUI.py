@@ -109,10 +109,10 @@ class MainWindow(QMainWindow):
         buttons_stats_layout = QHBoxLayout()
         buttons_stats_layout.addLayout(button_layout)
         buttons_stats_layout.addWidget(self.stats_group_box)
+        buttons_stats_layout.addWidget(self.mode_group_box)
 
         main_layout.addLayout(buttons_stats_layout)
         main_layout.addWidget(self.output_group_box)
-        main_layout.addWidget(self.mode_group_box)
 
         # Connect signals
         self.start_stop_button.clicked.connect(self.toggle_inspection)
