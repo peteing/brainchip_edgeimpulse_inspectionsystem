@@ -3,7 +3,7 @@ import os
 import cv2
 import threading
 import shutil
-from PyQt5.QtCore import QTimer, QObject, pyqtSignal, pyqtSlot, Qt
+from PyQt5.QtCore import QTimer, Qt, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox, QDialog
 
