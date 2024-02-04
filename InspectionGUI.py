@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.setWindowTitle("Adjusted PyQt5 Application")
+    window.setWindowTitle("Edge Impulse inspection")
     window.setGeometry(0, 0, 1920, 1080)
     window.show()
     sys.exit(app.exec_())
