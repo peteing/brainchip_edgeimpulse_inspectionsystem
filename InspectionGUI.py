@@ -2,25 +2,20 @@ import sys
 import cv2
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFrame, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QMessageBox
 
-class VideoDisplay(QFrame):
+class VideoDisplay(QLabel):
     def __init__(self, parent=None):
         super(VideoDisplay, self).__init__(parent)
-        self.setFrameStyle(QFrame.Box)
         self.video_capture = cv2.VideoCapture(0)
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
         # Check if the webcam is opened successfully
         if not self.video_capture.isOpened():
-            self.setStyleSheet("background-color: red;")
-            self.video_label = QLabel("No camera detected", self)
+            self.setText("No camera detected")
+            QMessageBox.warning(self, "Warning", "No camera detected.", QMessageBox.Ok)
         else:
-            self.setStyleSheet("background-color: black;")
-            self.video_label = QLabel(self)
-            self.video_label.setAlignment(Qt.AlignCenter)
-            self.video_label.setScaledContents(True)
             self.timer = QTimer(self)
             self.timer.timeout.connect(self.update_frame)
             self.inspection_enabled = False
@@ -36,7 +31,7 @@ class VideoDisplay(QFrame):
             bytes_per_line = ch * w
             image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(image)
-            self.video_label.setPixmap(pixmap)
+            self.setPixmap(pixmap)
 
             if self.inspection_enabled:
                 self.inspect_frame(frame)
@@ -96,7 +91,7 @@ class MainWindow(QMainWindow):
         output_layout.addWidget(self.output_label)
 
         main_layout = QVBoxLayout(self.central_widget)
-        main_layout.addWidget(self.video_display)
+        main_layout.addWidget(self.video_display, 1)
         main_layout.addLayout(button_layout)
         main_layout.addWidget(self.stats_group_box)
         main_layout.addWidget(self.output_group_box)
