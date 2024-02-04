@@ -3,7 +3,7 @@ import os
 import cv2
 import threading
 import shutil
-from PyQt5.QtCore import QTimer, QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QTimer, QObject, pyqtSignal, pyqtSlot, Qt
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox, QDialog
 
@@ -59,9 +59,13 @@ class CustomLoadModelDialog(QDialog):
         try:
             os.makedirs(models_folder, exist_ok=True)
             shutil.copy2(source_path, destination_path)
-            QMessageBox.information(self, "Model Uploaded", "Model uploaded successfully.", QMessageBox.Ok)
+            self.show_message("Model Uploaded", "Model uploaded successfully.")
         except Exception as e:
-            QMessageBox.warning(self, "Error", f"Failed to upload model: {str(e)}", QMessageBox.Ok)
+            self.show_message("Error", f"Failed to upload model: {str(e)}")
+
+    @staticmethod
+    def show_message(title, message):
+        QMessageBox.information(None, title, message, QMessageBox.Ok)
 
     def closeEvent(self, event):
         self.worker_thread.join()
@@ -77,7 +81,7 @@ class VideoDisplay(QLabel):
         # Check if the webcam is opened successfully
         if not self.video_capture.isOpened():
             self.setText("No camera detected")
-            QMessageBox.warning(self, "Warning", "No camera detected.", QMessageBox.Ok)
+            self.show_warning("Warning", "No camera detected.")
         else:
             self.timer = QTimer(self)
             self.timer.timeout.connect(self.update_frame)
@@ -86,6 +90,10 @@ class VideoDisplay(QLabel):
             self.stats_label = QLabel("No statistics available", self)  # Empty stats_label
             self.diagnostics_label = QLabel("No diagnostics available", self)  # Empty diagnostics_label
             self.timer.start(30)
+
+    @staticmethod
+    def show_warning(title, message):
+        QMessageBox.warning(None, title, message, QMessageBox.Ok)
 
     def update_frame(self):
         ret, frame = self.video_capture.read()
