@@ -2,12 +2,15 @@ import sys
 import cv2
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout
+from PyQt5.QtWidgets import (
+    QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton,
+    QHBoxLayout, QGroupBox, QMenuBar, QMenu, QAction, QStatusBar
+)
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
         super(VideoDisplay, self).__init__(parent)
-        self.video_capture = cv2.VideoCapture(0)  # You can change the index to the desired camera
+        self.video_capture = cv2.VideoCapture(0)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
         self.inspection_enabled = False
@@ -48,6 +51,27 @@ class MainWindow(QMainWindow):
         self.load_model_button = QPushButton("Load new Model", self)
         self.exit_button = QPushButton(QIcon.fromTheme('SP_TitleBarCloseButton'), 'Exit', self)
 
+        self.stats_group_box = QGroupBox("Statistics and Diagnostics", self)
+        self.stats_label = QLabel("No statistics available", self)
+        self.output_group_box = QGroupBox("Object Detection Output", self)
+        self.output_label = QLabel("No output available", self)
+
+        self.init_ui()
+
+    def init_ui(self):
+        # Create menu bar
+        menubar = self.menuBar()
+        file_menu = menubar.addMenu('File')
+
+        # Create actions for menu
+        exit_action = QAction('Exit', self)
+        exit_action.triggered.connect(self.close)
+        file_menu.addAction(exit_action)
+
+        # Create status bar
+        statusbar = QStatusBar(self)
+        self.setStatusBar(statusbar)
+
         # Set the button sizes and styles
         button_size = 150
         self.start_stop_button.setFixedSize(button_size, button_size)
@@ -65,9 +89,18 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.video_display, 1)
         layout.addLayout(button_layout)
 
+        # Create a layout for statistics and diagnostics
+        stats_layout = QVBoxLayout(self.stats_group_box)
+        stats_layout.addWidget(self.stats_label)
+        layout.addWidget(self.stats_group_box)
+
+        # Create a layout for object detection output
+        output_layout = QVBoxLayout(self.output_group_box)
+        output_layout.addWidget(self.output_label)
+        layout.addWidget(self.output_group_box)
+
         self.start_stop_button.clicked.connect(self.toggle_inspection)
         self.load_model_button.clicked.connect(self.load_new_model)
-        self.exit_button.clicked.connect(self.close_application)
 
     def toggle_inspection(self):
         # Toggle the inspection flag
@@ -77,15 +110,9 @@ class MainWindow(QMainWindow):
         # Placeholder for model loading logic
         print("Load new Model button clicked")
 
-    def close_application(self):
-        self.close()
-
-    def resizeEvent(self, event):
-        self.setGeometry(0, 0, 1920, 1080)  # Set the window size to 1920x1080
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.setWindowTitle("OpenCV PyQt5 Application")
+    window.setWindowTitle("Professional PyQt5 Application")
     window.show()
     sys.exit(app.exec_())
