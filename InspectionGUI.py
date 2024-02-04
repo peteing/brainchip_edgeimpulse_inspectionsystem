@@ -46,7 +46,7 @@ class VideoDisplay(QLabel):
     def diagnostics(self):
         # Update diagnostics information
         diagnostics_text = f"Akida Power: {self.akida_power}"
-        self.stats_label.setText(diagnostics_text)
+        self.diagnostics_label.setText(diagnostics_text)
 
     def stop_video(self):
         self.timer.stop()
