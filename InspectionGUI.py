@@ -10,6 +10,7 @@ class VideoDisplay(QLabel):
         self.video_capture = cv2.VideoCapture(0)  # You can change the index to the desired camera
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
+        self.inspection_enabled = False
         self.timer.start(30)
 
     def update_frame(self):
@@ -21,6 +22,13 @@ class VideoDisplay(QLabel):
             image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(image)
             self.setPixmap(pixmap)
+
+            if self.inspection_enabled:
+                self.inspect_frame(frame)
+
+    def inspect_frame(self, frame):
+        # Placeholder function to inspect each frame
+        print("Frame Size:", frame.shape)
 
     def stop_video(self):
         self.timer.stop()
@@ -57,13 +65,13 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.video_display, 1)
         layout.addLayout(button_layout)
 
-        self.start_stop_button.clicked.connect(self.start_stop_inspection)
+        self.start_stop_button.clicked.connect(self.toggle_inspection)
         self.load_model_button.clicked.connect(self.load_new_model)
         self.exit_button.clicked.connect(self.close_application)
 
-    def start_stop_inspection(self):
-        # Placeholder for inspection logic
-        print("Start/Stop Inspection button clicked")
+    def toggle_inspection(self):
+        # Toggle the inspection flag
+        self.video_display.inspection_enabled = not self.video_display.inspection_enabled
 
     def load_new_model(self):
         # Placeholder for model loading logic
