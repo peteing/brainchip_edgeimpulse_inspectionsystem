@@ -2,7 +2,7 @@ import sys
 import cv2
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QCheckBox, QFileDialog, QMessageBox
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
@@ -70,6 +70,9 @@ class MainWindow(QMainWindow):
         self.stats_label = QLabel("No statistics available", self)
         self.output_group_box = QGroupBox("Object Detection Output", self)
         self.output_label = QLabel("No output available", self)
+        self.mode_group_box = QGroupBox("Mode", self)
+        self.object_detection_checkbox = QCheckBox("Object Detection", self)
+        self.classification_checkbox = QCheckBox("Classification", self)
 
         self.init_ui()
 
@@ -95,6 +98,10 @@ class MainWindow(QMainWindow):
         output_layout = QVBoxLayout(self.output_group_box)
         output_layout.addWidget(self.output_label)
 
+        mode_layout = QHBoxLayout(self.mode_group_box)
+        mode_layout.addWidget(self.object_detection_checkbox)
+        mode_layout.addWidget(self.classification_checkbox)
+
         main_layout = QVBoxLayout(self.central_widget)
         main_layout.addWidget(self.video_display, 1)
 
@@ -105,35 +112,46 @@ class MainWindow(QMainWindow):
 
         main_layout.addLayout(buttons_stats_layout)
         main_layout.addWidget(self.output_group_box)
+        main_layout.addWidget(self.mode_group_box)
 
         # Connect signals
         self.start_stop_button.clicked.connect(self.toggle_inspection)
-        self.load_detection_model_button.clicked.connect(self.load_object_detection_model)
-        self.load_classification_model_button.clicked.connect(self.load_classification_model)
+        self.load_detection_model_button.clicked.connect(self.load_new_model)
+        self.load_classification_model_button.clicked.connect(self.load_new_classification_model)
         self.exit_button.clicked.connect(self.close_application)
 
     def toggle_inspection(self):
         self.video_display.inspection_enabled = not self.video_display.inspection_enabled
 
-    def load_object_detection_model(self):
-        self.load_model("objdetection.fbz")
-
-    def load_classification_model(self):
-        self.load_model("classifier.fbz")
-
-    def load_model(self, model_name):
+    def load_new_model(self):
         options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
         options |= QFileDialog.DontUseNativeDialog
         file_dialog = QFileDialog(self, options=options)
+        file_dialog.setFileMode(QFileDialog.ExistingFiles)
         file_dialog.setNameFilter("FBZ Models (*.fbz)")
-        file_dialog.setWindowTitle(f"Select {model_name} Model")
 
         if file_dialog.exec_():
             model_files = file_dialog.selectedFiles()
 
             if model_files:
                 model_path = model_files[0]
-                self.save_model(model_path, model_name)
+                self.save_model(model_path, "objdetection.fbz")
+
+    def load_new_classification_model(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
+        options |= QFileDialog.DontUseNativeDialog
+        file_dialog = QFileDialog(self, options=options)
+        file_dialog.setFileMode(QFileDialog.ExistingFiles)
+        file_dialog.setNameFilter("FBZ Models (*.fbz)")
+
+        if file_dialog.exec_():
+            model_files = file_dialog.selectedFiles()
+
+            if model_files:
+                model_path = model_files[0]
+                self.save_model(model_path, "classifier.fbz")
 
     def save_model(self, source_path, destination_name):
         models_folder = "models"
