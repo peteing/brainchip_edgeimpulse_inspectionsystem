@@ -2,18 +2,26 @@ import sys
 import cv2
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QMessageBox
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
         super(VideoDisplay, self).__init__(parent)
         self.video_capture = cv2.VideoCapture(0)
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_frame)
-        self.inspection_enabled = False
-        self.akida_power = 0  # Placeholder for Akida Power value
-        self.stats_label = QLabel("No statistics available", self)  # Empty stats_label
-        self.timer.start(30)
+        self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+        # Check if the webcam is opened successfully
+        if not self.video_capture.isOpened():
+            self.setText("No camera detected")
+            QMessageBox.warning(self, "Warning", "No camera detected.", QMessageBox.Ok)
+        else:
+            self.timer = QTimer(self)
+            self.timer.timeout.connect(self.update_frame)
+            self.inspection_enabled = False
+            self.akida_power = 0  # Placeholder for Akida Power value
+            self.stats_label = QLabel("No statistics available", self)  # Empty stats_label
+            self.timer.start(30)
 
     def update_frame(self):
         ret, frame = self.video_capture.read()
@@ -57,6 +65,7 @@ class MainWindow(QMainWindow):
         self.load_model_button = QPushButton("Load new Model", self)
         self.exit_button = QPushButton(QIcon.fromTheme('SP_TitleBarCloseButton'), 'Exit', self)
         self.stats_group_box = QGroupBox("Statistics and Diagnostics", self)
+        self.stats_label = QLabel("No statistics available", self)
         self.output_group_box = QGroupBox("Object Detection Output", self)
         self.output_label = QLabel("No output available", self)
 
@@ -76,7 +85,7 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(self.exit_button)
 
         stats_layout = QVBoxLayout(self.stats_group_box)
-        stats_layout.addWidget(self.video_display.stats_label)
+        stats_layout.addWidget(self.stats_label)
 
         output_layout = QVBoxLayout(self.output_group_box)
         output_layout.addWidget(self.output_label)
