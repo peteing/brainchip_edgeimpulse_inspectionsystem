@@ -145,4 +145,15 @@ class MainWindow(QMainWindow):
 
             QMessageBox.information(self, "Models Uploaded", "Models uploaded successfully.", QMessageBox.Ok)
         except Exception as e:
-            QMessageBox.warning(self, "Error",
+            QMessageBox.warning(self, "Error", f"Failed to upload models: {str(e)}", QMessageBox.Ok)
+
+    def close_application(self):
+        self.close()
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.setWindowTitle("Updated PyQt5 Application")
+    window.setGeometry(0, 0, 1920, 1080)
+    window.show()
+    sys.exit(app.exec_())
