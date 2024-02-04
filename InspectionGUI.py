@@ -3,15 +3,14 @@ import os
 import cv2
 import threading
 import shutil
-from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal, QThread, pyqtSlot
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QThread
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox, QDialog
 
-class Worker(QObject):
+class Worker(QThread):
     finished = pyqtSignal()
 
-    def run(self, callback):
-        callback()
+    def run(self):
         self.finished.emit()
 
 class CustomLoadModelDialog(QDialog):
@@ -19,12 +18,10 @@ class CustomLoadModelDialog(QDialog):
         super(CustomLoadModelDialog, self).__init__(parent)
 
         self.worker = Worker()
-        self.worker_thread = QThread()
-        self.worker.moveToThread(self.worker_thread)
-        self.worker_thread.started.connect(lambda: self.worker.run(self.init_ui))
-        self.worker.finished.connect(self.worker_thread.quit)
         self.worker.finished.connect(self.close)
-        self.worker_thread.start()
+        self.worker_thread = threading.Thread(target=self.worker.run)
+
+        self.init_ui()
 
     def init_ui(self):
         self.setWindowTitle("Upload Models")
@@ -68,8 +65,7 @@ class CustomLoadModelDialog(QDialog):
             QMessageBox.warning(self, "Error", f"Failed to upload model: {str(e)}", QMessageBox.Ok)
 
     def closeEvent(self, event):
-        self.worker_thread.quit()
-        self.worker_thread.wait()
+        self.worker_thread.join()
         super().closeEvent(event)
 
 class VideoDisplay(QLabel):
@@ -189,7 +185,7 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.setWindowTitle("Updated PyQt5 Apdfplication")
+    window.setWindowTitle("Updated PyQt5 Application")
     window.setGeometry(0, 0, 1920, 1080)
     window.show()
     sys.exit(app.exec_())
