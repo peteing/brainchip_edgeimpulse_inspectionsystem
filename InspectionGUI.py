@@ -94,8 +94,13 @@ class MainWindow(QMainWindow):
 
         main_layout = QVBoxLayout(self.central_widget)
         main_layout.addWidget(self.video_display, 1)
-        main_layout.addLayout(button_layout)
-        main_layout.addWidget(self.stats_group_box)
+
+        # Create a horizontal layout for buttons and stats
+        buttons_stats_layout = QHBoxLayout()
+        buttons_stats_layout.addLayout(button_layout)
+        buttons_stats_layout.addWidget(self.stats_group_box)
+
+        main_layout.addLayout(buttons_stats_layout)
         main_layout.addWidget(self.output_group_box)
 
         # Connect signals
