@@ -1,15 +1,26 @@
 import sys
 import os
 import cv2
-from PyQt5.QtCore import Qt, QTimer
+import threading
+import shutil  # Add this import statement
+from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox, QDialog
+
+class Worker(QObject):
+    finished = pyqtSignal()
+
+    def run(self, callback):
+        callback()
+        self.finished.emit()
 
 class CustomLoadModelDialog(QDialog):
     def __init__(self, parent=None):
         super(CustomLoadModelDialog, self).__init__(parent)
 
-        self.init_ui()
+        self.worker = Worker()
+        self.worker_thread = threading.Thread(target=self.worker.run, args=(self.init_ui,))
+        self.worker_thread.start()
 
     def init_ui(self):
         self.setWindowTitle("Upload Models")
@@ -52,6 +63,9 @@ class CustomLoadModelDialog(QDialog):
         except Exception as e:
             QMessageBox.warning(self, "Error", f"Failed to upload model: {str(e)}", QMessageBox.Ok)
 
+    def closeEvent(self, event):
+        self.worker_thread.join()
+        super().closeEvent(event)
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
@@ -195,15 +209,11 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, "Models Uploaded", "Models uploaded successfully.", QMessageBox.Ok)
         except Exception as e:
             QMessageBox.warning(self, "Error", f"Failed to upload models: {str(e)}", QMessageBox.Ok)
+    
 
-    def load_new_model(self):
-        custom_dialog = CustomLoadModelDialog(self)
-
-        if custom_dialog.exec_() == QDialog.Accepted:
-            selected_model = custom_dialog.selected_model
-
-            if selected_model == 1 or selected_model == 2:
-                self.upload_models(f"model{selected_model}.fbz")
+        def load_new_model(self):
+            custom_dialog = CustomLoadModelDialog(self)
+            custom_dialog.exec_()
 
     
     def close_application(self):
