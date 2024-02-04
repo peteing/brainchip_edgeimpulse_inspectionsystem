@@ -2,20 +2,24 @@ import sys
 import cv2
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFrame, QMessageBox
 
-class VideoDisplay(QLabel):
+class VideoDisplay(QFrame):
     def __init__(self, parent=None):
         super(VideoDisplay, self).__init__(parent)
+        self.setFrameStyle(QFrame.Box)
         self.video_capture = cv2.VideoCapture(0)
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
         # Check if the webcam is opened successfully
         if not self.video_capture.isOpened():
-            self.setText("No camera detected")
-            QMessageBox.warning(self, "Warning", "No camera detected.", QMessageBox.Ok)
+            self.setStyleSheet("background-color: red;")
+            self.video_label = QLabel("No camera detected", self)
         else:
+            self.setStyleSheet("background-color: black;")
+            self.video_label = QLabel(self)
+            self.video_label.setAlignment(Qt.AlignCenter)
             self.timer = QTimer(self)
             self.timer.timeout.connect(self.update_frame)
             self.inspection_enabled = False
@@ -31,7 +35,7 @@ class VideoDisplay(QLabel):
             bytes_per_line = ch * w
             image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(image)
-            self.setPixmap(pixmap)
+            self.video_label.setPixmap(pixmap)
 
             if self.inspection_enabled:
                 self.inspect_frame(frame)
