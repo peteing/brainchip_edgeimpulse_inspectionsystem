@@ -3,7 +3,7 @@ import os
 import cv2
 import threading
 import shutil
-from PyQt5.QtCore import QTimer, Qt, QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal, QThread, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox, QDialog
 
@@ -19,7 +19,11 @@ class CustomLoadModelDialog(QDialog):
         super(CustomLoadModelDialog, self).__init__(parent)
 
         self.worker = Worker()
-        self.worker_thread = threading.Thread(target=self.worker.run, args=(self.init_ui,))
+        self.worker_thread = QThread()
+        self.worker.moveToThread(self.worker_thread)
+        self.worker_thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.worker_thread.quit)
+        self.worker.finished.connect(self.close)
         self.worker_thread.start()
 
     def init_ui(self):
@@ -31,7 +35,7 @@ class CustomLoadModelDialog(QDialog):
 
         model1_button.clicked.connect(self.upload_model1)
         model2_button.clicked.connect(self.upload_model2)
-        done_button.clicked.connect(self.accept)
+        done_button.clicked.connect(self.accept)  # Close the dialog when "Done" is clicked
 
         layout = QVBoxLayout()
         layout.addWidget(model1_button)
@@ -59,16 +63,13 @@ class CustomLoadModelDialog(QDialog):
         try:
             os.makedirs(models_folder, exist_ok=True)
             shutil.copy2(source_path, destination_path)
-            self.show_message("Model Uploaded", "Model uploaded successfully.")
+            QMessageBox.information(self, "Model Uploaded", "Model uploaded successfully.", QMessageBox.Ok)
         except Exception as e:
-            self.show_message("Error", f"Failed to upload model: {str(e)}")
-
-    @staticmethod
-    def show_message(title, message):
-        QMessageBox.information(None, title, message, QMessageBox.Ok)
+            QMessageBox.warning(self, "Error", f"Failed to upload model: {str(e)}", QMessageBox.Ok)
 
     def closeEvent(self, event):
-        self.worker_thread.join()
+        self.worker_thread.quit()
+        self.worker_thread.wait()
         super().closeEvent(event)
 
 class VideoDisplay(QLabel):
@@ -81,7 +82,7 @@ class VideoDisplay(QLabel):
         # Check if the webcam is opened successfully
         if not self.video_capture.isOpened():
             self.setText("No camera detected")
-            self.show_warning("Warning", "No camera detected.")
+            QMessageBox.warning(self, "Warning", "No camera detected.", QMessageBox.Ok)
         else:
             self.timer = QTimer(self)
             self.timer.timeout.connect(self.update_frame)
@@ -90,10 +91,6 @@ class VideoDisplay(QLabel):
             self.stats_label = QLabel("No statistics available", self)  # Empty stats_label
             self.diagnostics_label = QLabel("No diagnostics available", self)  # Empty diagnostics_label
             self.timer.start(30)
-
-    @staticmethod
-    def show_warning(title, message):
-        QMessageBox.warning(None, title, message, QMessageBox.Ok)
 
     def update_frame(self):
         ret, frame = self.video_capture.read()
