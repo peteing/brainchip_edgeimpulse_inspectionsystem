@@ -12,6 +12,7 @@ class VideoDisplay(QLabel):
         self.timer.timeout.connect(self.update_frame)
         self.inspection_enabled = False
         self.akida_power = 0  # Placeholder for Akida Power value
+        self.stats_label = QLabel("No statistics available", self)  # Empty stats_label
         self.timer.start(30)
 
     def update_frame(self):
@@ -56,7 +57,6 @@ class MainWindow(QMainWindow):
         self.load_model_button = QPushButton("Load new Model", self)
         self.exit_button = QPushButton(QIcon.fromTheme('SP_TitleBarCloseButton'), 'Exit', self)
         self.stats_group_box = QGroupBox("Statistics and Diagnostics", self)
-        self.stats_label = QLabel("No statistics available", self)
         self.output_group_box = QGroupBox("Object Detection Output", self)
         self.output_label = QLabel("No output available", self)
 
@@ -76,7 +76,7 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(self.exit_button)
 
         stats_layout = QVBoxLayout(self.stats_group_box)
-        stats_layout.addWidget(self.stats_label)
+        stats_layout.addWidget(self.video_display.stats_label)
 
         output_layout = QVBoxLayout(self.output_group_box)
         output_layout.addWidget(self.output_label)
