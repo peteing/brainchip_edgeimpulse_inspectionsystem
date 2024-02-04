@@ -1,13 +1,11 @@
 import sys
 import os
 import cv2
-import threading
-import shutil
-from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QThread
+from PyQt5.QtCore import Qt, QTimer, QThreadPool, QRunnable, pyqtSignal
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox, QDialog
 
-class Worker(QThread):
+class Worker(QRunnable):
     finished = pyqtSignal()
 
     def run(self):
@@ -16,10 +14,6 @@ class Worker(QThread):
 class CustomLoadModelDialog(QDialog):
     def __init__(self, parent=None):
         super(CustomLoadModelDialog, self).__init__(parent)
-
-        self.worker = Worker()
-        self.worker.finished.connect(self.close)
-        self.worker_thread = threading.Thread(target=self.worker.run)
 
         self.init_ui()
 
@@ -63,10 +57,6 @@ class CustomLoadModelDialog(QDialog):
             QMessageBox.information(self, "Model Uploaded", "Model uploaded successfully.", QMessageBox.Ok)
         except Exception as e:
             QMessageBox.warning(self, "Error", f"Failed to upload model: {str(e)}", QMessageBox.Ok)
-
-    def closeEvent(self, event):
-        self.worker_thread.join()
-        super().closeEvent(event)
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
@@ -134,6 +124,7 @@ class MainWindow(QMainWindow):
         self.output_group_box = QGroupBox("Object Detection Output", self)
         self.output_label = QLabel("No output available", self)
 
+        self.threadpool = QThreadPool()
         self.init_ui()
 
     def init_ui(self):
