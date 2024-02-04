@@ -80,7 +80,7 @@ class MainWindow(QMainWindow):
         self.exit_button.setFixedSize(button_size, button_size)
 
         # Create layouts
-        button_layout = QHBoxLayout()
+        button_layout = QVBoxLayout()
         button_layout.addWidget(self.start_stop_button)
         button_layout.addWidget(self.load_model_button)
         button_layout.addWidget(self.exit_button)
@@ -94,14 +94,14 @@ class MainWindow(QMainWindow):
 
         main_layout = QHBoxLayout(self.central_widget)
         main_layout.addWidget(self.video_display, 1)
-        main_layout.addWidget(self.stats_group_box)
+        main_layout.addLayout(stats_layout)
         main_layout.addWidget(self.output_group_box)
 
-        button_stats_layout = QVBoxLayout()
-        button_stats_layout.addLayout(button_layout)
-        button_stats_layout.addLayout(main_layout)
+        main_button_layout = QVBoxLayout()
+        main_button_layout.addLayout(button_layout)
+        main_button_layout.addLayout(main_layout)
 
-        self.central_widget.setLayout(button_stats_layout)
+        self.central_widget.setLayout(main_button_layout)
 
         # Connect signals
         self.start_stop_button.clicked.connect(self.toggle_inspection)
