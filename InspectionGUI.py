@@ -1,4 +1,5 @@
 import sys
+import os
 import cv2
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
@@ -29,12 +30,27 @@ class CustomLoadModelDialog(QDialog):
         self.setLayout(layout)
 
     def upload_model1(self):
-        self.selected_model = 1
-        self.accept()
+        model_file, _ = QFileDialog.getOpenFileName(self, "Select Model 1", "", "FBZ Models (*.fbz)")
+
+        if model_file:
+            self.save_model(model_file, "model1.fbz")
 
     def upload_model2(self):
-        self.selected_model = 2
-        self.accept()
+        model_file, _ = QFileDialog.getOpenFileName(self, "Select Model 2", "", "FBZ Models (*.fbz)")
+
+        if model_file:
+            self.save_model(model_file, "model2.fbz")
+
+    def save_model(self, source_path, destination_name):
+        models_folder = "models"
+        destination_path = os.path.join(models_folder, destination_name)
+
+        try:
+            os.makedirs(models_folder, exist_ok=True)
+            shutil.copy2(source_path, destination_path)
+            QMessageBox.information(self, "Model Uploaded", "Model uploaded successfully.", QMessageBox.Ok)
+        except Exception as e:
+            QMessageBox.warning(self, "Error", f"Failed to upload model: {str(e)}", QMessageBox.Ok)
 
 
 class VideoDisplay(QLabel):
