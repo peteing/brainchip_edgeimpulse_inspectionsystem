@@ -2,7 +2,7 @@ import sys
 import cv2
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
@@ -11,6 +11,7 @@ class VideoDisplay(QLabel):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
         self.inspection_enabled = False
+        self.akida_power = 0  # Placeholder for Akida Power value
         self.timer.start(30)
 
     def update_frame(self):
@@ -29,6 +30,13 @@ class VideoDisplay(QLabel):
     def inspect_frame(self, frame):
         # Placeholder function to inspect each frame
         print("Frame Size:", frame.shape)
+        self.akida_power += 1  # Placeholder logic, update Akida Power value
+        self.diagnostics()
+
+    def diagnostics(self):
+        # Update diagnostics information
+        diagnostics_text = f"Akida Power: {self.akida_power}"
+        self.stats_label.setText(diagnostics_text)
 
     def stop_video(self):
         self.timer.stop()
@@ -82,6 +90,7 @@ class MainWindow(QMainWindow):
         # Connect signals
         self.start_stop_button.clicked.connect(self.toggle_inspection)
         self.load_model_button.clicked.connect(self.load_new_model)
+        self.exit_button.clicked.connect(self.close_application)
 
     def toggle_inspection(self):
         self.video_display.inspection_enabled = not self.video_display.inspection_enabled
@@ -89,10 +98,13 @@ class MainWindow(QMainWindow):
     def load_new_model(self):
         print("Load new Model button clicked")
 
+    def close_application(self):
+        self.close()
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.setWindowTitle("Edge Impulse inspection")
+    window.setWindowTitle("Updated PyQt5 Application")
     window.setGeometry(0, 0, 1920, 1080)
     window.show()
     sys.exit(app.exec_())
