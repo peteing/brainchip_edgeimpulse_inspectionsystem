@@ -62,9 +62,6 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
 
         self.video_display = VideoDisplay(self)
-        self.mode_group_box = QGroupBox("Mode", self)
-        self.object_detection_checkbox = QCheckBox("Object Detection", self)
-        self.classification_checkbox = QCheckBox("Classification", self)
         self.start_stop_button = QPushButton("Start/Stop Inspection", self)
         self.load_detection_model_button = QPushButton("Load Object Detection Model", self)
         self.load_classification_model_button = QPushButton("Load Classification Model", self)
@@ -73,6 +70,9 @@ class MainWindow(QMainWindow):
         self.stats_label = QLabel("No statistics available", self)
         self.output_group_box = QGroupBox("Object Detection Output", self)
         self.output_label = QLabel("No output available", self)
+        self.mode_group_box = QGroupBox("Mode", self)
+        self.object_detection_checkbox = QCheckBox("Object Detection", self)
+        self.classification_checkbox = QCheckBox("Classification", self)
 
         self.init_ui()
 
@@ -85,10 +85,6 @@ class MainWindow(QMainWindow):
         self.exit_button.setFixedSize(button_size, button_size)
 
         # Create layouts
-        mode_layout = QVBoxLayout(self.mode_group_box)
-        mode_layout.addWidget(self.object_detection_checkbox)
-        mode_layout.addWidget(self.classification_checkbox)
-
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.start_stop_button)
         button_layout.addWidget(self.load_detection_model_button)
@@ -102,12 +98,21 @@ class MainWindow(QMainWindow):
         output_layout = QVBoxLayout(self.output_group_box)
         output_layout.addWidget(self.output_label)
 
+        mode_layout = QHBoxLayout(self.mode_group_box)
+        mode_layout.addWidget(self.object_detection_checkbox)
+        mode_layout.addWidget(self.classification_checkbox)
+
         main_layout = QVBoxLayout(self.central_widget)
         main_layout.addWidget(self.video_display, 1)
-        main_layout.addWidget(self.mode_group_box)
-        main_layout.addLayout(button_layout)
-        main_layout.addWidget(self.stats_group_box)
+
+        # Create a horizontal layout for buttons and stats
+        buttons_stats_layout = QHBoxLayout()
+        buttons_stats_layout.addLayout(button_layout)
+        buttons_stats_layout.addWidget(self.stats_group_box)
+
+        main_layout.addLayout(buttons_stats_layout)
         main_layout.addWidget(self.output_group_box)
+        main_layout.addWidget(self.mode_group_box)
 
         # Connect signals
         self.start_stop_button.clicked.connect(self.toggle_inspection)
