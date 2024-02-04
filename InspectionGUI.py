@@ -2,27 +2,7 @@ import sys
 import cv2
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox, QDialog
-
-class CustomLoadModelDialog(QDialog):
-    def __init__(self, parent=None):
-        super(CustomLoadModelDialog, self).__init__(parent)
-
-        self.init_ui()
-
-    def init_ui(self):
-        self.setWindowTitle("Load New Model")
-
-        load_model_button = QPushButton("Load New Model", self)
-        load_model_button.clicked.connect(self.load_new_model)
-
-        layout = QVBoxLayout()
-        layout.addWidget(load_model_button)
-
-        self.setLayout(layout)
-
-    def load_new_model(self):
-        print("Loading new model")
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
@@ -83,7 +63,7 @@ class MainWindow(QMainWindow):
 
         self.video_display = VideoDisplay(self)
         self.start_stop_button = QPushButton("Start/Stop Inspection", self)
-        self.load_model_button = QPushButton("Load new Model", self)
+        self.load_model_button = QPushButton("Load Object Detection Model", self)
         self.exit_button = QPushButton(QIcon.fromTheme('SP_TitleBarCloseButton'), 'Exit', self)
         self.stats_group_box = QGroupBox("Statistics and Diagnostics", self)
         self.stats_label = QLabel("No statistics available", self)
@@ -125,15 +105,38 @@ class MainWindow(QMainWindow):
 
         # Connect signals
         self.start_stop_button.clicked.connect(self.toggle_inspection)
-        self.load_model_button.clicked.connect(self.load_new_model)
+        self.load_model_button.clicked.connect(self.load_object_detection_model)
         self.exit_button.clicked.connect(self.close_application)
 
     def toggle_inspection(self):
         self.video_display.inspection_enabled = not self.video_display.inspection_enabled
 
-    def load_new_model(self):
-        custom_dialog = CustomLoadModelDialog(self)
-        custom_dialog.exec_()
+    def load_object_detection_model(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        file_dialog = QFileDialog(self, options=options)
+        file_dialog.setNameFilter("FBZ Models (*.fbz)")
+        file_dialog.setWindowTitle("Select Object Detection Model")
+
+        if file_dialog.exec_():
+            model_files = file_dialog.selectedFiles()
+
+            if model_files:
+                model_path = model_files[0]
+                self.save_model(model_path, "objdetection.fbz")
+
+    def save_model(self, source_path, destination_name):
+        models_folder = "models"
+        destination_path = f"{models_folder}/{destination_name}"
+
+        try:
+            import os
+            os.makedirs(models_folder, exist_ok=True)
+            import shutil
+            shutil.copy2(source_path, destination_path)
+            QMessageBox.information(self, "Model Uploaded", "Model uploaded successfully.", QMessageBox.Ok)
+        except Exception as e:
+            QMessageBox.warning(self, "Error", f"Failed to upload model: {str(e)}", QMessageBox.Ok)
 
     def close_application(self):
         self.close()
