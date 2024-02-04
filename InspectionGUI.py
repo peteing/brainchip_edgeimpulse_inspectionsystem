@@ -189,7 +189,7 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.setWindowTitle("Updated PyQt5 Application")
+    window.setWindowTitle("Updated PyQt5 Apdfplication")
     window.setGeometry(0, 0, 1920, 1080)
     window.show()
     sys.exit(app.exec_())
