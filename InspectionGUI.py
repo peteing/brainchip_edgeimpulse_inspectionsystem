@@ -1,9 +1,7 @@
 import sys
-import os
 import cv2
 import threading
-import shutil  # Add this import statement
-from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QTimer, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox, QDialog
 
@@ -31,7 +29,7 @@ class CustomLoadModelDialog(QDialog):
 
         model1_button.clicked.connect(self.upload_model1)
         model2_button.clicked.connect(self.upload_model2)
-        done_button.clicked.connect(self.accept)  # Close the dialog when "Done" is clicked
+        done_button.clicked.connect(self.accept)
 
         layout = QVBoxLayout()
         layout.addWidget(model1_button)
@@ -175,47 +173,9 @@ class MainWindow(QMainWindow):
         self.video_display.inspection_enabled = not self.video_display.inspection_enabled
 
     def load_new_model(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.ReadOnly
-        options |= QFileDialog.DontUseNativeDialog
-        file_dialog = QFileDialog(self, options=options)
-        file_dialog.setFileMode(QFileDialog.ExistingFiles)
-        file_dialog.setNameFilter("FBZ Models (*.fbz)")
+        custom_dialog = CustomLoadModelDialog(self)
+        custom_dialog.exec_()
 
-        if file_dialog.exec_():
-            model_files = file_dialog.selectedFiles()
-
-            if len(model_files) == 2:
-                self.upload_models(model_files[0], model_files[1])
-            else:
-                QMessageBox.warning(self, "Warning", "Please select exactly 2 model files.", QMessageBox.Ok)
-
-    def upload_models(self, model1_path, model2_path):
-        # Save the models to the "models" subfolder
-        models_folder = "models"
-        model1_destination = f"{models_folder}/model1.fbz"
-        model2_destination = f"{models_folder}/model2.fbz"
-
-        try:
-            # Create the "models" subfolder if it doesn't exist
-            import os
-            os.makedirs(models_folder, exist_ok=True)
-
-            # Copy the model files
-            import shutil
-            shutil.copy2(model1_path, model1_destination)
-            shutil.copy2(model2_path, model2_destination)
-
-            QMessageBox.information(self, "Models Uploaded", "Models uploaded successfully.", QMessageBox.Ok)
-        except Exception as e:
-            QMessageBox.warning(self, "Error", f"Failed to upload models: {str(e)}", QMessageBox.Ok)
-    
-
-        def load_new_model(self):
-            custom_dialog = CustomLoadModelDialog(self)
-            custom_dialog.exec_()
-
-    
     def close_application(self):
         self.close()
 
