@@ -21,6 +21,7 @@ class VideoDisplay(QLabel):
             self.inspection_enabled = False
             self.akida_power = 0  # Placeholder for Akida Power value
             self.stats_label = QLabel("No statistics available", self)  # Empty stats_label
+            self.diagnostics_label = QLabel("No diagnostics available", self)  # Empty diagnostics_label
             self.timer.start(30)
 
     def update_frame(self):
@@ -86,6 +87,7 @@ class MainWindow(QMainWindow):
 
         stats_layout = QVBoxLayout(self.stats_group_box)
         stats_layout.addWidget(self.stats_label)
+        stats_layout.addWidget(self.video_display.diagnostics_label)  # Add the diagnostics label
 
         output_layout = QVBoxLayout(self.output_group_box)
         output_layout.addWidget(self.output_label)
