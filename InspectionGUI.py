@@ -1,15 +1,8 @@
 import sys
-import os
 import cv2
-from PyQt5.QtCore import Qt, QTimer, QThreadPool, QRunnable, pyqtSignal
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QFileDialog, QMessageBox, QDialog
-
-class Worker(QRunnable):
-    finished = pyqtSignal()
-
-    def run(self):
-        self.finished.emit()
 
 class CustomLoadModelDialog(QDialog):
     def __init__(self, parent=None):
@@ -18,45 +11,18 @@ class CustomLoadModelDialog(QDialog):
         self.init_ui()
 
     def init_ui(self):
-        self.setWindowTitle("Upload Models")
+        self.setWindowTitle("Load New Model")
 
-        model1_button = QPushButton("Model 1", self)
-        model2_button = QPushButton("Model 2", self)
-        done_button = QPushButton("Done", self)
-
-        model1_button.clicked.connect(self.upload_model1)
-        model2_button.clicked.connect(self.upload_model2)
-        done_button.clicked.connect(self.accept)  # Close the dialog when "Done" is clicked
+        load_model_button = QPushButton("Load New Model", self)
+        load_model_button.clicked.connect(self.load_new_model)
 
         layout = QVBoxLayout()
-        layout.addWidget(model1_button)
-        layout.addWidget(model2_button)
-        layout.addWidget(done_button)
+        layout.addWidget(load_model_button)
 
         self.setLayout(layout)
 
-    def upload_model1(self):
-        model_file, _ = QFileDialog.getOpenFileName(self, "Select Model 1", "", "FBZ Models (*.fbz)")
-
-        if model_file:
-            self.save_model(model_file, "model1.fbz")
-
-    def upload_model2(self):
-        model_file, _ = QFileDialog.getOpenFileName(self, "Select Model 2", "", "FBZ Models (*.fbz)")
-
-        if model_file:
-            self.save_model(model_file, "model2.fbz")
-
-    def save_model(self, source_path, destination_name):
-        models_folder = "models"
-        destination_path = os.path.join(models_folder, destination_name)
-
-        try:
-            os.makedirs(models_folder, exist_ok=True)
-            shutil.copy2(source_path, destination_path)
-            QMessageBox.information(self, "Model Uploaded", "Model uploaded successfully.", QMessageBox.Ok)
-        except Exception as e:
-            QMessageBox.warning(self, "Error", f"Failed to upload model: {str(e)}", QMessageBox.Ok)
+    def load_new_model(self):
+        print("Loading new model")
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
@@ -124,7 +90,6 @@ class MainWindow(QMainWindow):
         self.output_group_box = QGroupBox("Object Detection Output", self)
         self.output_label = QLabel("No output available", self)
 
-        self.threadpool = QThreadPool()
         self.init_ui()
 
     def init_ui(self):
