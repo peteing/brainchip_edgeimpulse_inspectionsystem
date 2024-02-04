@@ -21,7 +21,7 @@ class CustomLoadModelDialog(QDialog):
         self.worker = Worker()
         self.worker_thread = QThread()
         self.worker.moveToThread(self.worker_thread)
-        self.worker_thread.started.connect(self.worker.run)
+        self.worker_thread.started.connect(lambda: self.worker.run(self.init_ui))
         self.worker.finished.connect(self.worker_thread.quit)
         self.worker.finished.connect(self.close)
         self.worker_thread.start()
