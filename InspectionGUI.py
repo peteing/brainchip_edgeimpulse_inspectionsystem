@@ -3,10 +3,15 @@ import cv2
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QCheckBox, QFileDialog, QMessageBox
+from akida import Model
+from akida import Devices
+
 
 # Global variables
 mode_objdet = False
 mode_classify = False
+model_objdet = Model("models/objdetection.fbz")
+model_objdet.summary()
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
@@ -185,7 +190,14 @@ class MainWindow(QMainWindow):
     def close_application(self):
         self.close()
 
+def brainchip_akida_detect():
+    device = devices()[0]
+    print(device.version)
+    
+
+
 if __name__ == '__main__':
+    brainchip_akida_detect()
     app = QApplication(sys.argv)
     window = MainWindow()
     window.setWindowTitle("Updated PyQt5 Application")
