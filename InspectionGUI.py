@@ -20,6 +20,7 @@ class VideoDisplay(QFrame):
             self.setStyleSheet("background-color: black;")
             self.video_label = QLabel(self)
             self.video_label.setAlignment(Qt.AlignCenter)
+            self.video_label.setScaledContents(True)
             self.timer = QTimer(self)
             self.timer.timeout.connect(self.update_frame)
             self.inspection_enabled = False
