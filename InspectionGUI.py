@@ -60,8 +60,8 @@ class VideoDisplay(QLabel):
         print("Height" + str(height) + "Width" + str(width))
 
         offset = abs(width -height)/2
-
-        frame_centered = frame_rgb[]
+        print(offset)
+        #frame_centered = frame_rgb[]
         counter = counter + 1
         #akida_in = np.expand_dims(akida_frame, axis=0)
 
