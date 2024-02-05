@@ -249,8 +249,8 @@ if __name__ == '__main__':
     brainchip_akida_detect()
     brainchip_load_models()
     
-    akida_model_objectdet.map(akida_device)
-    akida_model_classify.map(akida_device)
+    akida_model_objectdet.map(akida_device, hw_only=True)
+    akida_model_classify.map(akida_device, hw_only=True)
     print("input")
     print(akida_model_objectdet.input_shape)
     print("output")
