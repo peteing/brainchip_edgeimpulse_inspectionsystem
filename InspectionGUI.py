@@ -2,6 +2,7 @@ import sys
 import cv2
 import time
 import os
+import numpy as np
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QCheckBox, QFileDialog, QMessageBox
@@ -52,9 +53,20 @@ class VideoDisplay(QLabel):
                 self.inspect_frame(frame)
 
     def inspect_frame(self, frame):
-        # Placeholder function to inspect each frame
-        print("Frame Size:", frame.shape)
-        time.sleep(2)
+        # This is where we perform the inference in case you are looking for it
+        akida_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+
+        akida_in = np.expand_dims(akida_frame, axis=0)
+
+        input_shape1 = (1,) + tuple(akida_model_objectdet.input_shape)
+        input_objdet = np.ones(input_shape1, dtype=np.uint8)
+
+        input_shape2 = (1,) + tuple(akida_model_classify.input_shape)
+        input_class = np.ones(input_shape2, dtype=np.uint8)
+        
+        akida_model_objectdet.forward(input_objdet)
+        # Diagnostics Info to be displayed in UI
         self.akida_power += 1  # Placeholder logic, update Akida Power value
         self.diagnostics()
 
