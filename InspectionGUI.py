@@ -246,6 +246,12 @@ def brainchip_load_models():
 
 
 if __name__ == '__main__':
+
+    devices = akida.devices()
+    print(f'Available devices: {[dev.desc for dev in devices]}')
+    assert len(devices), "No device found, this example needs an Akida NSoC_v2 device."
+    device = devices[0]
+    assert device.version == akida.NSoC_v2, "Wrong device found, this example needs an Akida NSoC_v2."
     brainchip_akida_detect()
     brainchip_load_models()
     
