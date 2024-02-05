@@ -206,6 +206,7 @@ def brainchip_akida_detect():
         print("No Akida devices found")
     
 def brainchip_load_models():
+    global akida_model_objectdet, akida_model_classify
     
     if os.path.isfile("models/objdetection.fbz"):
         akida_model_objectdet = Model("models/objdetection.fbz")
