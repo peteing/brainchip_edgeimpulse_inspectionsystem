@@ -1,5 +1,6 @@
 import sys
 import cv2
+import time
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QCheckBox, QFileDialog, QMessageBox
@@ -49,6 +50,7 @@ class VideoDisplay(QLabel):
     def inspect_frame(self, frame):
         # Placeholder function to inspect each frame
         print("Frame Size:", frame.shape)
+        time.sleep(2)
         self.akida_power += 1  # Placeholder logic, update Akida Power value
         self.diagnostics()
 
