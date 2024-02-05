@@ -227,6 +227,8 @@ def brainchip_load_models():
 if __name__ == '__main__':
     brainchip_akida_detect()
     brainchip_load_models()
+    akida_device.map(akida_model_objectdet)
+    akida_device.map(akida_model_classify)
     app = QApplication(sys.argv)
     window = MainWindow()
     window.setWindowTitle("Updated PyQt5 Application")
