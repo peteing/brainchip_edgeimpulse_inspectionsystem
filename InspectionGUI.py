@@ -69,11 +69,11 @@ class VideoDisplay(QLabel):
         objdet_output = akida_model_objectdet.forward(input_objdet)
         class_output = akida_model_classify.forward(input_class)
         print("OD ======================" + str(counter))
-        print(objdet_output)
+        #print(objdet_output)
         print("delay")
         time.sleep(3)
         print("Classify======================" + str(counter))
-        print(objdet_output)
+        #print(objdet_output)
         print("delay")
         time.sleep(3)
         # Diagnostics Info to be displayed in UI
