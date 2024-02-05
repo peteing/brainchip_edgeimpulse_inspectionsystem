@@ -257,6 +257,7 @@ if __name__ == '__main__':
     brainchip_load_models()
     
     akida_model_objectdet.map(akida_device)
+    print("please be hardware")
     akida_model_objectdet.summary()
     #akida_model_classify.map(akida_device)
     print("input")
