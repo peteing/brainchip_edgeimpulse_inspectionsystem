@@ -58,6 +58,10 @@ class VideoDisplay(QLabel):
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         height, width, _ = frame_rgb.shape
         print("Height" + str(height) + "Width" + str(width))
+
+        offset = abs(width -height)/2
+
+        frame_centered = frame_rgb[]
         counter = counter + 1
         #akida_in = np.expand_dims(akida_frame, axis=0)
 
@@ -232,14 +236,14 @@ def brainchip_load_models():
     if os.path.isfile("models/objdetection.fbz"):
         akida_model_objectdet = Model("models/objdetection.fbz")
         print("======================Object Detection Model Summary======================")
-        akida_model_objectdet.summary()
+        #akida_model_objectdet.summary()
     else:
         print("No Object Detection model found")
     
     if os.path.isfile("models/classifier.fbz"):
         akida_model_classify = Model("models/classifier.fbz")
         print("======================Classification Model Summary========================")
-        akida_model_classify.summary()
+        #akida_model_classify.summary()
     else:
         print("No Classification model found")
 
@@ -252,7 +256,8 @@ if __name__ == '__main__':
     brainchip_akida_detect()
     brainchip_load_models()
     
-    akida_model_objectdet.map(akida_device, hw_only=True)
+    akida_model_objectdet.map(akida_device)
+    akida_model_objectdet.summary()
     #akida_model_classify.map(akida_device)
     print("input")
     print(akida_model_objectdet.input_shape)
