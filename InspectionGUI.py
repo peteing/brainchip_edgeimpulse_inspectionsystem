@@ -201,7 +201,7 @@ def brainchip_akida_detect():
     if len(devices()) != 0:
         print("Akida device found")
         akida_device = devices()[0]
-        
+        print(akida_device.version)
     else:
         print("No Akida devices found")
     
@@ -227,8 +227,8 @@ def brainchip_load_models():
 if __name__ == '__main__':
     brainchip_akida_detect()
     brainchip_load_models()
-    akida_device.map(akida_model_objectdet)
-    akida_device.map(akida_model_classify)
+    akida_model_objectdet.map(akida_device)
+    akida_model_classify.map(akida_device)
     app = QApplication(sys.argv)
     window = MainWindow()
     window.setWindowTitle("Updated PyQt5 Application")
