@@ -1,6 +1,7 @@
 import sys
 import cv2
 import time
+import os
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QCheckBox, QFileDialog, QMessageBox
@@ -8,11 +9,14 @@ from akida import Model
 from akida import devices
 
 
-# Global variables
+# Global variables (yeah I know)
 mode_objdet = False
 mode_classify = False
-model_objdet = Model("models/objdetection.fbz")
-model_objdet.summary()
+
+akida_device = None
+akida_model_objectdet = None
+akida_model_classify = None
+
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
@@ -193,9 +197,28 @@ class MainWindow(QMainWindow):
         self.close()
 
 def brainchip_akida_detect():
-    device = devices()[0]
-    print(device.version)
+    if len(devices()) != 0:
+        global akida_device = devices()[0]
+    else:
+        print("No Akida devices found")
     
+def brainchip_load_models():
+    
+    if os.path.isfile("models/objdetection.fbz"):
+        akida_model_objectdet = Model("models/objdetection.fbz")
+        print("======================Object Detection Model Summary======================")
+        akida_model_objectdet.summary()
+    else:
+        print("No Object Detection model found")
+    
+    if os.path.isfile("models/classifier.fbz"):
+        akida_model_classify = Model("models/classifier.fbz")
+        print("======================Classification Model Summary========================")
+        akida_model_classify.summary()
+    else:
+        print("No Classification model found")
+
+
 
 
 if __name__ == '__main__':
