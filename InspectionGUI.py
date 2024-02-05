@@ -56,7 +56,7 @@ class VideoDisplay(QLabel):
         global counter
         # This is where we perform the inference in case you are looking for it
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        height, width = frame_rgb.shape
+        height, width, _ = frame_rgb.shape
         print("Height" + str(height) + "Width" + str(width))
         counter = counter + 1
         #akida_in = np.expand_dims(akida_frame, axis=0)
