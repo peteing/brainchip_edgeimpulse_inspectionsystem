@@ -67,6 +67,7 @@ class VideoDisplay(QLabel):
         input_class = np.ones(input_shape2, dtype=np.uint8)
         
         objdet_output = akida_model_objectdet.forward(input_objdet)
+        class_output = akida_model_classify.forward(input_class)
         print("Counter======================" + str(counter))
         print(objdet_output)
         # Diagnostics Info to be displayed in UI
