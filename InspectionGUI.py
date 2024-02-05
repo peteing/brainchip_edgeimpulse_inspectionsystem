@@ -55,23 +55,24 @@ class VideoDisplay(QLabel):
     def inspect_frame(self, frame):
         global counter
         # This is where we perform the inference in case you are looking for it
-       # akida_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        height, width = frame_rgb.shape
+        print("Height" + str(height) + "Width" + str(width))
         counter = counter + 1
         #akida_in = np.expand_dims(akida_frame, axis=0)
 
-        input_shape1 = (1,) + tuple(akida_model_objectdet.input_shape)
-        input_objdet = np.ones(input_shape1, dtype=np.uint8)
+        #input_shape1 = (1,) + tuple(akida_model_objectdet.input_shape)
+        #input_objdet = np.ones(input_shape1, dtype=np.uint8)
 
-        input_shape2 = (1,) + tuple(akida_model_classify.input_shape)
-        input_class = np.ones(input_shape2, dtype=np.uint8)
+        #input_shape2 = (1,) + tuple(akida_model_classify.input_shape)
+        #input_class = np.ones(input_shape2, dtype=np.uint8)
         
-        objdet_output = akida_model_objectdet.forward(input_objdet)
-        class_output = akida_model_classify.forward(input_class)
-        print("OD ======================" + str(counter))
+        #objdet_output = akida_model_objectdet.forward(input_objdet)
+        #class_output = akida_model_classify.forward(input_class)
+        #print("OD ======================" + str(counter))
         #print(objdet_output)
         
-        print("Classify======================" + str(counter))
+        #print("Classify======================" + str(counter))
         #print(objdet_output)
         
         # Diagnostics Info to be displayed in UI
@@ -247,11 +248,7 @@ def brainchip_load_models():
 
 if __name__ == '__main__':
 
-    devices = devices()
-    print(f'Available devices: {[dev.desc for dev in devices]}')
-    assert len(devices), "No device found, this example needs an Akida NSoC_v2 device."
-    device = devices[0]
-    assert device.version == akida.NSoC_v2, "Wrong device found, this example needs an Akida NSoC_v2."
+    
     brainchip_akida_detect()
     brainchip_load_models()
     
