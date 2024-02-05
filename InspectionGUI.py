@@ -217,7 +217,7 @@ class MainWindow(QMainWindow):
         self.close()
 
 def brainchip_akida_detect():
-    #global akida_device
+    global akida_device
     if len(devices()) != 0:
         print("Akida device found")
         akida_device = devices()[0]
