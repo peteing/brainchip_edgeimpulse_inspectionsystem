@@ -66,6 +66,7 @@ class VideoDisplay(QLabel):
         input_class = np.ones(input_shape2, dtype=np.uint8)
         
         objdet_output = akida_model_objectdet.forward(input_objdet)
+        print(objdet_output)
         # Diagnostics Info to be displayed in UI
         self.akida_power += 1  # Placeholder logic, update Akida Power value
         self.diagnostics()
