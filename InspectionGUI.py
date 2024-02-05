@@ -54,10 +54,10 @@ class VideoDisplay(QLabel):
 
     def inspect_frame(self, frame):
         # This is where we perform the inference in case you are looking for it
-        akida_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+       # akida_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
 
-        akida_in = np.expand_dims(akida_frame, axis=0)
+        #akida_in = np.expand_dims(akida_frame, axis=0)
 
         input_shape1 = (1,) + tuple(akida_model_objectdet.input_shape)
         input_objdet = np.ones(input_shape1, dtype=np.uint8)
@@ -65,7 +65,7 @@ class VideoDisplay(QLabel):
         input_shape2 = (1,) + tuple(akida_model_classify.input_shape)
         input_class = np.ones(input_shape2, dtype=np.uint8)
         
-        akida_model_objectdet.forward(input_objdet)
+        objdet_output = akida_model_objectdet.forward(input_objdet)
         # Diagnostics Info to be displayed in UI
         self.akida_power += 1  # Placeholder logic, update Akida Power value
         self.diagnostics()
