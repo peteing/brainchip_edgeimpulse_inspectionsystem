@@ -247,7 +247,7 @@ def brainchip_load_models():
 
 if __name__ == '__main__':
 
-    devices = akida.devices()
+    devices = devices()
     print(f'Available devices: {[dev.desc for dev in devices]}')
     assert len(devices), "No device found, this example needs an Akida NSoC_v2 device."
     device = devices[0]
