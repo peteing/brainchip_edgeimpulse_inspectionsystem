@@ -17,7 +17,7 @@ mode_classify = False
 akida_device = None
 akida_model_objectdet = None
 akida_model_classify = None
-
+counter =0
 
 class VideoDisplay(QLabel):
     def __init__(self, parent=None):
@@ -53,10 +53,11 @@ class VideoDisplay(QLabel):
                 self.inspect_frame(frame)
 
     def inspect_frame(self, frame):
+        global counter
         # This is where we perform the inference in case you are looking for it
        # akida_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-
+        counter +=1
         #akida_in = np.expand_dims(akida_frame, axis=0)
 
         input_shape1 = (1,) + tuple(akida_model_objectdet.input_shape)
@@ -66,6 +67,7 @@ class VideoDisplay(QLabel):
         input_class = np.ones(input_shape2, dtype=np.uint8)
         
         objdet_output = akida_model_objectdet.forward(input_objdet)
+        print("Counter" + counter)
         print(objdet_output)
         # Diagnostics Info to be displayed in UI
         self.akida_power += 1  # Placeholder logic, update Akida Power value
