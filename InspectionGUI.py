@@ -68,13 +68,17 @@ class VideoDisplay(QLabel):
         counter = counter + 1
 
         #Object Detection
-        results_objdet = akida_model_objectdet.predict(input_frame_akida)
-        print("===============START=================")
-        print(results_objdet)
-        print("==================STOP===============")
-        time.sleep(3)
+        fomo_out_objdet = akida_model_objectdet.predict(input_frame_akida)
+        pred = softmax(fomo_out_objdet, axis=-1).squeeze()
+        result = fill_result_struct_f32_fomo_obj(pred, int(akida_model_objectdet_inshape/8), int(akida_model_objectdet_inshape/8))
+        print("result")
+        print(result)
+        #print("===============START=================")
+        #print(results_objdet)
+        #print("==================STOP===============")
+        #time.sleep(3)
         #akida_in = np.expand_dims(akida_frame, axis=0)
-
+        output_obj = softmax(results_objdet, axis=-1).squeeze()
         #input_shape1 = (1,) + tuple(akida_model_objectdet.input_shape)
         #input_objdet = np.ones(input_shape1, dtype=np.uint8)
 
@@ -231,12 +235,117 @@ class MainWindow(QMainWindow):
     def close_application(self):
         self.close()
 
+def ei_cube_check_overlap(c, x, y, width, height, confidence):
+    is_overlapping = not ((c['x'] + c['width'] < x) or (c['y'] + c['height'] < y) or (c['x'] > x + width) or (c['y'] > y + height))
+
+    if not is_overlapping:
+         return False
+    if x < c['x']:
+        c['x'] = x
+        c['width'] += c['x'] - x
+    if y < c['y']:
+        c['y'] = y
+        c['height'] += c['y'] - y
+    if (x + width) > (c['x'] + c['width']):
+        c['width'] += (x + width) - (c['x'] + c['width'])
+    if (y + height) > (c['y'] + c['height']):
+        c['height'] += (y + height) - (c['y'] + c['height'])
+    if confidence > c['confidence']:
+        c['confidence'] = confidence
+
+    return True
+
+def ei_handle_cube(cubes, x, y, vf, label, detection_threshold):
+    if vf < detection_threshold:
+        return
+    has_overlapping = False
+    width = 1
+    height = 1
+    for c in cubes:
+        # not cube for same class? continue
+        if c['label'] != label:
+             continue
+        if ei_cube_check_overlap(c, x, y, width, height, vf):
+            has_overlapping = True
+            break
+
+    if not has_overlapping:
+        cube = {}
+        cube['x'] = x
+        cube['y'] = y
+        cube['width'] = 1
+        cube['height'] = 1
+        cube['confidence'] = vf
+        cube['label'] = label
+        cubes.append(cube)
+
+def fill_result_struct_from_cubes(cubes, out_width_factor):
+    result = {}
+    bbs = []
+    results = []
+    added_boxes_count = 0
+
+    for sc in cubes:
+        has_overlapping = False
+        for c in bbs:
+            # not cube for same class? continue
+            if c['label'] != sc['label']:
+                continue
+            if ei_cube_check_overlap(c, sc['x'], sc['y'], sc['width'], sc['height'], sc['confidence']):
+                has_overlapping = True
+                break
+
+        if has_overlapping:
+            continue
+
+        bbs.append(sc)
+        results.append({
+            'label'  : sc['label'],
+            'x'      : int(sc['x'] * out_width_factor),
+            'y'      : int(sc['y'] * out_width_factor),
+            'width'  : int(sc['width'] * out_width_factor),
+            'height' : int(sc['height'] * out_width_factor),
+            'value'  : sc['confidence']
+        })
+        added_boxes_count += 1
+        
+    result['bounding_boxes'] = results
+    result['bounding_boxes_count'] = len(results)
+    return result
+
+def fill_result_struct_f32_fomo_obj(data,  label_count, thresh, categories):
+    cubes = []
+    out_factor = akida_model_objectdet_inshape/8
+    out_width_factor = akida_model_objectdet_inshape / out_factor
+    for y in range(out_factor):
+        for x in range(out_factor):
+            for ix in range(1, label_count + 1):
+                vf = data[y][x][ix]
+                ei_handle_cube(cubes, x, y, vf, categories[ix - 1], thresh)
+
+    result = fill_result_struct_from_cubes(cubes, out_width_factor)
+    return result
+
+def fill_result_struct_f32_fomo_class(data, out_width, out_height,label_count, thresh, categories):
+    cubes = []
+    out_factor = akida_model_classify_inshape/8
+    out_width_factor = akida_model_classify_inshape / out_factor
+    for y in range(out_factor):
+        for x in range(out_factor):
+            for ix in range(1, label_count + 1):
+                vf = data[y][x][ix]
+                ei_handle_cube(cubes, x, y, vf, categories[ix - 1], thresh)
+
+    result = fill_result_struct_from_cubes(cubes, out_width_factor)
+    return result
 def brainchip_akida_detect():
     global akida_device
     if len(devices()) != 0:
         print("Akida device found")
         akida_device = devices()[0]
         print(akida_device.version)
+        akida_device.soc.power_measurement_enabled = True
+
     else:
         print("No Akida devices found")
     
