@@ -71,7 +71,7 @@ class VideoDisplay(QLabel):
         #Object Detection
         fomo_out_objdet = akida_model_objectdet.predict(input_frame_akida)
         pred = softmax(fomo_out_objdet, axis=-1).squeeze()
-        result = fill_result_struct_f32_fomo_obj(pred,0.95, categories = ['face'])
+        result = fill_result_struct_f32_fomo_obj(pred,1,0.95, categories = ['face'])
         print("result")
         print(result)
         #print("===============START=================")
@@ -327,7 +327,7 @@ def fill_result_struct_f32_fomo_obj(data,  label_count, thresh, categories):
     result = fill_result_struct_from_cubes(cubes, out_width_factor)
     return result
 
-def fill_result_struct_f32_fomo_class(data, out_width, out_height,label_count, thresh, categories):
+def fill_result_struct_f32_fomo_class(data,label_count, thresh, categories):
     cubes = []
     out_factor = int(akida_model_classify_inshape/8)
     out_width_factor = akida_model_classify_inshape / out_factor
