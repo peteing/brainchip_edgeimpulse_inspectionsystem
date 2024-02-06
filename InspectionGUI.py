@@ -69,7 +69,10 @@ class VideoDisplay(QLabel):
 
         #Object Detection
         results_objdet = akida_model_objectdet.predict(input_frame_akida)
+        print("===============START=================")
         print(results_objdet)
+        print("==================STOP===============")
+        time.sleep(3)
         #akida_in = np.expand_dims(akida_frame, axis=0)
 
         #input_shape1 = (1,) + tuple(akida_model_objectdet.input_shape)
