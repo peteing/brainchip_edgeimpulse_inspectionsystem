@@ -317,7 +317,7 @@ def fill_result_struct_from_cubes(cubes, out_width_factor):
 def fill_result_struct_f32_fomo_obj(data,  label_count, thresh, categories):
     cubes = []
     out_factor = int(akida_model_objectdet_inshape[0]/8)
-    out_width_factor = akida_model_objectdet_inshape / out_factor
+    out_width_factor = akida_model_objectdet_inshape[0] / out_factor
     for y in range(out_factor):
         for x in range(out_factor):
             for ix in range(1, label_count + 1):
@@ -330,7 +330,7 @@ def fill_result_struct_f32_fomo_obj(data,  label_count, thresh, categories):
 def fill_result_struct_f32_fomo_class(data,label_count, thresh, categories):
     cubes = []
     out_factor = int(akida_model_classify_inshape[0]/8)
-    out_width_factor = akida_model_classify_inshape / out_factor
+    out_width_factor = akida_model_classify_inshape[0] / out_factor
     for y in range(out_factor):
         for x in range(out_factor):
             for ix in range(1, label_count + 1):
