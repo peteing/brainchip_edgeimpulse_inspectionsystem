@@ -70,7 +70,7 @@ class VideoDisplay(QLabel):
         #Object Detection
         fomo_out_objdet = akida_model_objectdet.predict(input_frame_akida)
         pred = softmax(fomo_out_objdet, axis=-1).squeeze()
-        result = fill_result_struct_f32_fomo_obj(pred, int(akida_model_objectdet_inshape/8), int(akida_model_objectdet_inshape/8))
+        result = fill_result_struct_f32_fomo_obj(pred,0.95, categories = ['face'])
         print("result")
         print(result)
         #print("===============START=================")
@@ -78,7 +78,7 @@ class VideoDisplay(QLabel):
         #print("==================STOP===============")
         #time.sleep(3)
         #akida_in = np.expand_dims(akida_frame, axis=0)
-        output_obj = softmax(results_objdet, axis=-1).squeeze()
+        #output_obj = softmax(results_objdet, axis=-1).squeeze()
         #input_shape1 = (1,) + tuple(akida_model_objectdet.input_shape)
         #input_objdet = np.ones(input_shape1, dtype=np.uint8)
 
@@ -315,7 +315,7 @@ def fill_result_struct_from_cubes(cubes, out_width_factor):
 
 def fill_result_struct_f32_fomo_obj(data,  label_count, thresh, categories):
     cubes = []
-    out_factor = akida_model_objectdet_inshape/8
+    out_factor = int(akida_model_objectdet_inshape/8)
     out_width_factor = akida_model_objectdet_inshape / out_factor
     for y in range(out_factor):
         for x in range(out_factor):
@@ -328,7 +328,7 @@ def fill_result_struct_f32_fomo_obj(data,  label_count, thresh, categories):
 
 def fill_result_struct_f32_fomo_class(data, out_width, out_height,label_count, thresh, categories):
     cubes = []
-    out_factor = akida_model_classify_inshape/8
+    out_factor = int(akida_model_classify_inshape/8)
     out_width_factor = akida_model_classify_inshape / out_factor
     for y in range(out_factor):
         for x in range(out_factor):
