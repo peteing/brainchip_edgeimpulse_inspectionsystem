@@ -17,6 +17,8 @@ mode_classify = False
 akida_device = None
 akida_model_objectdet = None
 akida_model_classify = None
+akida_model_objectdet_inshape = None
+akida_model_classify_inshape = None
 counter =0
 
 class VideoDisplay(QLabel):
@@ -61,7 +63,7 @@ class VideoDisplay(QLabel):
 
         offset = abs(width -height)/2
         print(offset)
-        input_frame = cv2.resize(frame_rgb,(224,224) ) # We need to resize the frame to the input layer of the Akida
+        input_frame = cv2.resize(frame_rgb,(akida_model_objectdet_inshape[0],akida_model_objectdet_inshape[1]) ) # We need to resize the frame to the input layer of the Akida
         input_frame_akida = np.expand_dims(input_frame, axis=0) # this needed to create the correct input tesnsor for the Akida which includes a batch size of 1 in this case
         counter = counter + 1
 
@@ -236,10 +238,12 @@ def brainchip_akida_detect():
         print("No Akida devices found")
     
 def brainchip_load_models():
-    global akida_model_objectdet, akida_model_classify
+    global akida_model_objectdet, akida_model_classify, akida_model_objectdet_inshape, akida_model_classify_inshape
     
     if os.path.isfile("models/objdetection.fbz"):
         akida_model_objectdet = Model("models/objdetection.fbz")
+        akida_model_objectdet_inshape = akida_model_objectdet.input_shape
+
         print("======================Object Detection Model Summary======================")
         #akida_model_objectdet.summary()
     else:
@@ -247,6 +251,8 @@ def brainchip_load_models():
     
     if os.path.isfile("models/classifier.fbz"):
         akida_model_classify = Model("models/classifier.fbz")
+
+        akida_model_classify_inshape = akida_model_classify.input_shape
         print("======================Classification Model Summary========================")
         #akida_model_classify.summary()
     else:
