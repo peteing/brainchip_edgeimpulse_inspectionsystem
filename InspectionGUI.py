@@ -379,6 +379,7 @@ if __name__ == '__main__':
     
     brainchip_akida_detect()
     brainchip_load_models()
+    type(akida_model_objectdet_inshape)
     
     akida_model_objectdet.map(akida_device)
     print("please be hardware")
