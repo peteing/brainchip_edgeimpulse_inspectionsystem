@@ -61,8 +61,13 @@ class VideoDisplay(QLabel):
 
         offset = abs(width -height)/2
         print(offset)
-        #frame_centered = frame_rgb[]
+        input_frame = cv2.resize(frame_rgb,(224,224) ) # We need to resize the frame to the input layer of the Akida
+        input_frame_akida = np.expand_dims(input_frame, axis=0) # this needed to create the correct input tesnsor for the Akida which includes a batch size of 1 in this case
         counter = counter + 1
+
+        #Object Detection
+        results_objdet = akida_model_objectdet.predict(input_frame_akida)
+        print(results_objdet)
         #akida_in = np.expand_dims(akida_frame, axis=0)
 
         #input_shape1 = (1,) + tuple(akida_model_objectdet.input_shape)
