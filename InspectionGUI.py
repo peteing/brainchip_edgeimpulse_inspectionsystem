@@ -77,7 +77,7 @@ class VideoDisplay(QLabel):
             result = fill_result_struct_f32_fomo_obj(pred,1,0.75, categories = ['face'])
             print("result")
             print(result)
-            if int(result['bounding_box_count']) > 0:
+            if int(result['bounding_boxes_count']) > 0:
                 print("object detected")
                 for detection in result['bounding_boxes']:
                     label, x,y,width,height, value = detection.values()
