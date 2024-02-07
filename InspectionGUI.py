@@ -74,17 +74,20 @@ class VideoDisplay(QLabel):
 
             fomo_out_objdet = akida_model_objectdet.predict(input_frame_akida)
             pred = softmax(fomo_out_objdet, axis=-1).squeeze()
-            result = fill_result_struct_f32_fomo_obj(pred,1,0.75, categories = ['face'])
+            result = fill_result_struct_f32_fomo_obj(pred,1,0.85, categories = ['face'])
             print("result")
             print(result)
             if int(result['bounding_boxes_count']) > 0:
                 print("object detected")
                 for detection in result['bounding_boxes']:
                     label, x,y,width,height, value = detection.values()
-                    #object_label = detection['label']
-                    #obj_x = detection['x']
-                    #obj_y = detection['y']
-                    cv2.circle(frame,(x,y),2,(255,255,255),-1 )
+                    input_w = input_frame.width
+                    input_h = input_frame.height
+                    ml_w = input_frame.width
+                    ml_h = input_frame.height
+                    scale_w = input_w/ml_w
+                    scale_h = input_h/ml_h
+                    cv2.circle(frame,(scalew*x,scale_h*y),2,(255,255,255),-1 )
                     h, w, ch = frame.shape
                     bytes_per_line = ch * w
                     image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
