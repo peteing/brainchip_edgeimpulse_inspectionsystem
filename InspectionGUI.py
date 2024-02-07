@@ -79,9 +79,9 @@ class VideoDisplay(QLabel):
             print("result")
             print(result)
             cv2.putText(frame, "Hello, OpenCV!", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-            h, w, ch = frame.shape
+            h, w, ch = input_frame.shape
             bytes_per_line = ch * w
-            image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
+            image = QImage(input_frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
             pixmap_postprocesing = QPixmap.fromImage(image)
             self.setPixmap(pixmap_postprocesing)
 
