@@ -81,7 +81,7 @@ class VideoDisplay(QLabel):
         bytes_per_line = ch * w
         image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
         pixmap_postprocesing = QPixmap.fromImage(image)
-        self.setPixmap(pixmap)
+        self.setPixmap(pixmap_postprocesing)
         #print("===============START=================")
         #print(results_objdet)
         #print("==================STOP===============")
