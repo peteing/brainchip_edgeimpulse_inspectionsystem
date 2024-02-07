@@ -77,13 +77,22 @@ class VideoDisplay(QLabel):
             result = fill_result_struct_f32_fomo_obj(pred,1,0.75, categories = ['face'])
             print("result")
             print(result)
-            cv2.putText(frame, "Hello, OpenCV!", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-            h, w, ch = input_frame.shape
-            bytes_per_line = ch * w
-            image = QImage(input_frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
-            pixmap_postprocesing = QPixmap.fromImage(image)
-            self.setPixmap(pixmap_postprocesing)
+            if int(result['bounding_box_count']) > 0:
+                print("object detected")
+                for detection in result['bounding_boxes']:
+                    label, x,y,width,height, value = detection.values()
+                    #object_label = detection['label']
+                    #obj_x = detection['x']
+                    #obj_y = detection['y']
+                    cv2.circle(frame,(x,y),2,(255,255,255),-1 )
+                    h, w, ch = frame.shape
+                    bytes_per_line = ch * w
+                    image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
+                    pixmap_postprocesing = QPixmap.fromImage(image)
+                    self.setPixmap(pixmap_postprocesing)
 
+                      
+            
         
         #Classification
         if mode_classify and not mode_objdet:
