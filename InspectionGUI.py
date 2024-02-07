@@ -12,7 +12,7 @@ from akida import devices
 
 
 # Global variables (yeah I know)
-mode_objdet = False
+mode_objdet = True
 mode_classify = False
 
 akida_device = None
@@ -58,22 +58,29 @@ class VideoDisplay(QLabel):
     def inspect_frame(self, frame):
         global counter
         # This is where we perform the inference in case you are looking for it
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        
         height, width, _ = frame_rgb.shape
         print("Height" + str(height) + "Width" + str(width))
 
         offset = abs(width -height)/2
         print(offset)
         input_frame = cv2.resize(frame_rgb,(akida_model_objectdet_inshape[0],akida_model_objectdet_inshape[1]) ) # We need to resize the frame to the input layer of the Akida
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         input_frame_akida = np.expand_dims(input_frame, axis=0) # this needed to create the correct input tesnsor for the Akida which includes a batch size of 1 in this case
         counter = counter + 1
 
         #Object Detection
-        fomo_out_objdet = akida_model_objectdet.predict(input_frame_akida)
-        pred = softmax(fomo_out_objdet, axis=-1).squeeze()
-        result = fill_result_struct_f32_fomo_obj(pred,1,0.75, categories = ['face'])
-        print("result")
-        print(result)
+        if mode_objdet and not mode_classify:
+            fomo_out_objdet = akida_model_objectdet.predict(input_frame_akida)
+            pred = softmax(fomo_out_objdet, axis=-1).squeeze()
+            result = fill_result_struct_f32_fomo_obj(pred,1,0.75, categories = ['face'])
+            print("result")
+            print(result)
+        cv2.putText(frame, "Hello, OpenCV!", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
+        image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
+        pixmap_postprocesing = QPixmap.fromImage(image)
+        self.setPixmap(pixmap)
         #print("===============START=================")
         #print(results_objdet)
         #print("==================STOP===============")
