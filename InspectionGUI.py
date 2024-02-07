@@ -71,17 +71,28 @@ class VideoDisplay(QLabel):
 
         #Object Detection
         if mode_objdet and not mode_classify:
+            akida_model_objectdet.map(akida_device)
+
             fomo_out_objdet = akida_model_objectdet.predict(input_frame_akida)
             pred = softmax(fomo_out_objdet, axis=-1).squeeze()
             result = fill_result_struct_f32_fomo_obj(pred,1,0.75, categories = ['face'])
             print("result")
             print(result)
-        cv2.putText(frame, "Hello, OpenCV!", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        h, w, ch = frame.shape
-        bytes_per_line = ch * w
-        image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
-        pixmap_postprocesing = QPixmap.fromImage(image)
-        self.setPixmap(pixmap_postprocesing)
+            cv2.putText(frame, "Hello, OpenCV!", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            h, w, ch = frame.shape
+            bytes_per_line = ch * w
+            image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
+            pixmap_postprocesing = QPixmap.fromImage(image)
+            self.setPixmap(pixmap_postprocesing)
+
+        
+        #Classification
+        if mode_classify and not mode_objdet:
+            akida_model_classify.map(akida_device)
+            classify_out = akida_model_classify.predict(input_frame_akida)
+            print(classify_out)
+
+       
         #print("===============START=================")
         #print(results_objdet)
         #print("==================STOP===============")
@@ -387,11 +398,7 @@ if __name__ == '__main__':
     
     brainchip_akida_detect()
     brainchip_load_models()
-    type(akida_model_objectdet_inshape)
-    print("ddd")
-    print(akida_model_objectdet_inshape)
     
-    akida_model_objectdet.map(akida_device)
     print("please be hardware")
     akida_model_objectdet.summary()
     #akida_model_classify.map(akida_device)
