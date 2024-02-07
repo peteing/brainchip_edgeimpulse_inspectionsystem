@@ -82,7 +82,7 @@ class VideoDisplay(QLabel):
                 for detection in result['bounding_boxes']:
                     label, x,y,width,height, value = detection.values()
                     input_w, input_h, _ = frame.shape
-                    ml_w, ml_d, _ = input_frame.shape
+                    ml_w, ml_h, _ = input_frame.shape
                     scale_w = input_w/ml_w
                     scale_h = input_h/ml_h
                     cv2.circle(frame,(scalew*x,scale_h*y),2,(255,255,255),-1 )
