@@ -83,8 +83,8 @@ class VideoDisplay(QLabel):
                     label, x,y,width,height, value = detection.values()
                     input_w, input_h, _ = frame.shape
                     ml_w, ml_h, _ = input_frame.shape
-                    scale_w = input_w/ml_w
-                    scale_h = input_h/ml_h
+                    scale_w = int(input_w/ml_w)
+                    scale_h = int(input_h/ml_h)
                     cv2.circle(frame,(scale_w*x,scale_h*y),2,(255,255,255),-1 )
                     h, w, ch = frame.shape
                     bytes_per_line = ch * w
