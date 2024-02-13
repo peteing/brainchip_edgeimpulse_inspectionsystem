@@ -191,7 +191,7 @@ class ImageDisplay(QLabel):
         # Resize the pixmap to fit the desired size
         pixmap = pixmap.scaled(280, 280, aspectMode=Qt.KeepAspectRatio)
 
-        # Add a black border to the pixmap
+        
         border_color = QColor(0, 0, 0)  # Black color
         border_width = 2  # You can adjust the border width
         pixmap = self.add_border_to_pixmap(pixmap, border_color, border_width)
