@@ -45,7 +45,7 @@ class VideoDisplay(QLabel):
             self.timer.timeout.connect(self.update_frame)
             self.inspection_enabled = False
             self.akida_power = 0  # Placeholder for Akida Power value
-            self.stats_label = QLabel("No statistics available", self)  # Empty stats_label
+            #self.stats_label = QLabel("No statistics available", self)  # Empty stats_label
             self.diagnostics_label = QLabel("No diagnostics available", self)  # Empty diagnostics_label
             self.timer.start(30)
 
