@@ -229,7 +229,7 @@ class MainWindow(QMainWindow):
 
         self.video_display = VideoDisplay(self)
         self.video_display_2 = ImageDisplay(self)
-        self.video_display.frame_updated.connect(self.video_display_2.display_image)
+        self.video_display.frame_updated.connect(self.video_display_2.display_frame)
 
         self.start_stop_button = QPushButton("Start/Stop Inspection", self)
         self.load_detection_model_button = QPushButton("Load Object Detection Model", self)
