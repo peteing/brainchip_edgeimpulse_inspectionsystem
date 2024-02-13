@@ -28,6 +28,9 @@ class VideoDisplay(QLabel):
         self.video_capture = cv2.VideoCapture(0)
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        border_color_1 = QColor(0, 0, 0)  # Black color
+        border_width_1 = 2  # You can adjust the border width
+        
 
         # Check if the webcam is opened successfully
         if not self.video_capture.isOpened():
@@ -42,6 +45,27 @@ class VideoDisplay(QLabel):
             self.diagnostics_label = QLabel("No diagnostics available", self)  # Empty diagnostics_label
             self.timer.start(30)
 
+        def add_border_to_pixmap(self, pixmap, color, width):
+                # Convert the QPixmap to a QImage
+                image = pixmap.toImage()
+                image.convertToFormat(QImage.Format_ARGB32)
+
+                # Create a QPainter to draw on the image
+                painter = QPainter(image)
+                painter.setRenderHint(QPainter.Antialiasing)
+
+                # Draw a border around the image
+                pen = QPen(color, width)
+                painter.setPen(pen)
+                painter.drawRect(image.rect())
+
+                painter.end()
+
+                # Convert the QImage back to a QPixmap
+                pixmap_with_border = QPixmap.fromImage(image)
+
+                return pixmap_with_border
+
     def update_frame(self):
         ret, frame = self.video_capture.read()
         if ret:
@@ -50,6 +74,7 @@ class VideoDisplay(QLabel):
             bytes_per_line = ch * w
             image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(image)
+            pixmap = self.add_border_to_pixmap(pixmap, border_color_1, border_width_1)
             self.setPixmap(pixmap)
 
             if self.inspection_enabled:
@@ -147,6 +172,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
 
         self.video_display = VideoDisplay(self)
+        self.video_display_2 = VideoDisplay(self)
         self.start_stop_button = QPushButton("Start/Stop Inspection", self)
         self.load_detection_model_button = QPushButton("Load Object Detection Model", self)
         self.load_classification_model_button = QPushButton("Load Classification Model", self)
@@ -189,6 +215,18 @@ class MainWindow(QMainWindow):
 
         main_layout = QVBoxLayout(self.central_widget)
         main_layout.addWidget(self.video_display, 1)
+
+        
+        # Create a horizontal layout for the main VideoDisplay and the new VideoDisplay
+        video_displays_layout = QHBoxLayout()
+        video_displays_layout.addWidget(self.video_display, 1)
+
+        # Create a new instance of VideoDisplay
+        self.video_display_2 = VideoDisplay(self)
+        video_displays_layout.addWidget(self.video_display_2, 1)
+
+        main_layout.addLayout(video_displays_layout)
+
 
         # Create a horizontal layout for buttons and stats
         buttons_stats_layout = QHBoxLayout()
