@@ -271,8 +271,7 @@ class MainWindow(QMainWindow):
         video_displays_layout = QHBoxLayout()
         video_displays_layout.addWidget(self.video_display, 1)
 
-        # Create a new instance of VideoDisplay
-        self.video_display_2 = VideoDisplay(self)
+        
         video_displays_layout.addWidget(self.video_display_2, 1)
 
         main_layout.addLayout(video_displays_layout)
