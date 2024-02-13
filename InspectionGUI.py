@@ -189,7 +189,7 @@ class ImageDisplay(QLabel):
         pixmap = QPixmap.fromImage(image)
 
         # Resize the pixmap to fit the desired size
-        pixmap = pixmap.scaled(280, 280, aspectMode=Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(280, 280, aspectRatioMode=Qt.KeepAspectRatio)
 
         
         border_color = QColor(0, 0, 0)  # Black color
