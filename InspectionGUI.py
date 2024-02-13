@@ -525,7 +525,7 @@ if __name__ == '__main__':
     print(akida_model_objectdet.output_shape)
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.setWindowTitle("Updated PyQt5 Application")
+    window.setWindowTitle("NeuroInspect - Powered by Brainchip and Edge Impulse")
     window.setGeometry(0, 0, 1920, 1080)
     window.show()
     sys.exit(app.exec_())
