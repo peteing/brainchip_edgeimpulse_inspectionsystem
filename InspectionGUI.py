@@ -251,6 +251,8 @@ class MainWindow(QMainWindow):
     def init_ui(self):
         # Set the button sizes and styles
         button_size = 150
+        self.setStyleSheet("background-color: white;")
+
         self.start_stop_button.setFixedSize(button_size, button_size)
         self.load_detection_model_button.setFixedSize(button_size, button_size)
         self.load_classification_model_button.setFixedSize(button_size, button_size)
