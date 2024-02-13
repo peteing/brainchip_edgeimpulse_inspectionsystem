@@ -227,7 +227,7 @@ class MainWindow(QMainWindow):
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
         self.banner_label = QLabel(self)
-        self.banner_label.setPixmap(QPixmap("media/bc_ei_logo.png")) 
+        self.banner_label.setPixmap(QPixmap("media/ei_bc_logo.png")) 
 
 
         self.video_display = VideoDisplay(self)
