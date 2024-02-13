@@ -45,26 +45,26 @@ class VideoDisplay(QLabel):
             self.diagnostics_label = QLabel("No diagnostics available", self)  # Empty diagnostics_label
             self.timer.start(30)
 
-        def add_border_to_pixmap(self, pixmap, color, width):
-                # Convert the QPixmap to a QImage
-                image = pixmap.toImage()
-                image.convertToFormat(QImage.Format_ARGB32)
+    def add_border_to_pixmap(self, pixmap, color, width):
+            # Convert the QPixmap to a QImage
+            image = pixmap.toImage()
+            image.convertToFormat(QImage.Format_ARGB32)
 
-                # Create a QPainter to draw on the image
-                painter = QPainter(image)
-                painter.setRenderHint(QPainter.Antialiasing)
+            # Create a QPainter to draw on the image
+            painter = QPainter(image)
+            painter.setRenderHint(QPainter.Antialiasing)
 
-                # Draw a border around the image
-                pen = QPen(color, width)
-                painter.setPen(pen)
-                painter.drawRect(image.rect())
+            # Draw a border around the image
+            pen = QPen(color, width)
+            painter.setPen(pen)
+            painter.drawRect(image.rect())
 
-                painter.end()
+            painter.end()
 
-                # Convert the QImage back to a QPixmap
-                pixmap_with_border = QPixmap.fromImage(image)
+            # Convert the QImage back to a QPixmap
+            pixmap_with_border = QPixmap.fromImage(image)
 
-                return pixmap_with_border
+            return pixmap_with_border
 
     def update_frame(self):
         ret, frame = self.video_capture.read()
@@ -74,7 +74,7 @@ class VideoDisplay(QLabel):
             bytes_per_line = ch * w
             image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(image)
-            pixmap = self.add_border_to_pixmap(pixmap, border_color_1, border_width_1)
+            #pixmap = self.add_border_to_pixmap(pixmap, border_color_1, border_width_1)
             self.setPixmap(pixmap)
 
             if self.inspection_enabled:
