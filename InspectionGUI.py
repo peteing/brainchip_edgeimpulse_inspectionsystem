@@ -164,6 +164,56 @@ class VideoDisplay(QLabel):
     def start_video(self):
         self.timer.start(30)
 
+
+
+class ImageDisplay(QLabel):
+    def __init__(self, parent=None):
+        super(ImageDisplay, self).__init__(parent)
+        self.setMinimumSize(280, 280)
+        self.setMaximumSize(280, 280)
+
+    def display_frame(self, frame):
+        pixmap = self.create_pixmap_from_frame(frame)
+        self.setPixmap(pixmap)
+
+    def create_pixmap_from_frame(self, frame):
+        h, w, ch = frame.shape
+        bytes_per_line = ch * w
+        image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(image)
+
+        # Resize the pixmap to fit the desired size
+        pixmap = pixmap.scaled(280, 280, aspectMode=Qt.KeepAspectRatio)
+
+        # Add a black border to the pixmap
+        border_color = QColor(0, 0, 0)  # Black color
+        border_width = 2  # You can adjust the border width
+        pixmap = self.add_border_to_pixmap(pixmap, border_color, border_width)
+
+        return pixmap
+
+    def add_border_to_pixmap(self, pixmap, color, width):
+        # Convert the QPixmap to a QImage
+        image = pixmap.toImage()
+        image.convertToFormat(QImage.Format_ARGB32)
+
+        # Create a QPainter to draw on the image
+        painter = QPainter(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        # Draw a border around the image
+        pen = QPen(color, width)
+        painter.setPen(pen)
+        painter.drawRect(image.rect())
+
+        painter.end()
+
+        # Convert the QImage back to a QPixmap
+        pixmap_with_border = QPixmap.fromImage(image)
+
+        return pixmap_with_border
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -172,7 +222,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
 
         self.video_display = VideoDisplay(self)
-        self.video_display_2 = VideoDisplay(self)
+        self.video_display_2 = ImageDisplay(self)
         self.start_stop_button = QPushButton("Start/Stop Inspection", self)
         self.load_detection_model_button = QPushButton("Load Object Detection Model", self)
         self.load_classification_model_button = QPushButton("Load Classification Model", self)
