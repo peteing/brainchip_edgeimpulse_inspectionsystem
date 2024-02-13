@@ -219,7 +219,7 @@ class ImageDisplay(QLabel):
 
         return pixmap_with_border
 
-
+# Main window
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
