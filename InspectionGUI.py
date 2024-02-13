@@ -226,6 +226,9 @@ class MainWindow(QMainWindow):
 
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
+        self.banner_label = QLabel(self)
+        self.banner_label.setPixmap(QPixmap("bc_ei_logo.png")) 
+
 
         self.video_display = VideoDisplay(self)
         self.video_display_2 = ImageDisplay(self)
@@ -271,7 +274,13 @@ class MainWindow(QMainWindow):
         mode_layout.addWidget(self.object_detection_checkbox)
         mode_layout.addWidget(self.classification_checkbox)
 
+        
+
+        # Add the banner label at the top center
+        
+
         main_layout = QVBoxLayout(self.central_widget)
+        main_layout.addWidget(self.banner_label, alignment=Qt.AlignTop | Qt.AlignHCenter)
         main_layout.addWidget(self.video_display, 1)
 
         
