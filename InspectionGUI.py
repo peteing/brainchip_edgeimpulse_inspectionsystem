@@ -9,6 +9,7 @@ from PyQt5.QtGui import QImage, QPixmap, QIcon, QColor
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QCheckBox, QFileDialog, QMessageBox
 from akida import Model
 from akida import devices
+from PyQt5.QtCore import pyqtSignal, QObject
 
 
 # Global variables (yeah I know)
@@ -23,6 +24,9 @@ akida_model_classify_inshape = None
 counter =0
 
 class VideoDisplay(QLabel):
+
+    frame_updated = pyqtSignal(object)
+
     def __init__(self, parent=None):
         super(VideoDisplay, self).__init__(parent)
         self.video_capture = cv2.VideoCapture(0)
@@ -118,6 +122,8 @@ class VideoDisplay(QLabel):
                     image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
                     pixmap_postprocesing = QPixmap.fromImage(image)
                     self.setPixmap(pixmap_postprocesing)
+                    self.frame_updated.emit(input_frame)
+
 
                       
             
@@ -223,6 +229,8 @@ class MainWindow(QMainWindow):
 
         self.video_display = VideoDisplay(self)
         self.video_display_2 = ImageDisplay(self)
+        self.video_display.frame_updated.connect(self.video_display_2.display_image)
+
         self.start_stop_button = QPushButton("Start/Stop Inspection", self)
         self.load_detection_model_button = QPushButton("Load Object Detection Model", self)
         self.load_classification_model_button = QPushButton("Load Classification Model", self)
