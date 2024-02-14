@@ -126,7 +126,7 @@ class VideoDisplay(QLabel):
                     self.setPixmap(pixmap_postprocesing)
                     #self.frame_updated.emit(input_frame) #slows down performance
                     result_frame = input_frame
-                    counter = akida_device.soc.power_meter.floor
+                    self.akida_power = akida_device.soc.power_meter.floor
                     print(f'Floor power: {floor_power:.2f} mW')
                     model_stats_obj = akida_model_objectdet.statistics
                     print(model_stats_obj)
@@ -168,7 +168,7 @@ class VideoDisplay(QLabel):
 
     def diagnostics(self):
         # Update diagnostics information
-        diagnostics_text = f"Akida Power: {self.akida_power}"
+        diagnostics_text = f"Akida Power: {self.akida_power:.2f} mW"
         self.diagnostics_label.setText(diagnostics_text)
 
     def stop_video(self):
