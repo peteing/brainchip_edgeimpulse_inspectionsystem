@@ -293,7 +293,7 @@ class MainWindow(QMainWindow):
 
         
         video_displays_layout.addWidget(self.video_display_2, 1)
-        video_displays_layout.addWidget(self.results_model_box,1)
+        #video_displays_layout.addWidget(self.results_model_box,1)
 
         main_layout.addLayout(video_displays_layout)
 
