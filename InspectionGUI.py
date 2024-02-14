@@ -23,6 +23,8 @@ akida_model_objectdet_inshape = None
 akida_model_classify_inshape = None
 counter =0
 
+result_frame = np.ones((280, 280, 3), dtype=np.uint8) * 255
+
 class VideoDisplay(QLabel):
 
     frame_updated = pyqtSignal(object)
@@ -85,7 +87,7 @@ class VideoDisplay(QLabel):
                 self.inspect_frame(frame)
 
     def inspect_frame(self, frame):
-        global counter
+        global counter, result_frame
         # This is where we perform the inference in case you are looking for it
         height, width, _ = frame.shape
         print("Height" + str(height) + "Width" + str(width))
@@ -122,7 +124,8 @@ class VideoDisplay(QLabel):
                     image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
                     pixmap_postprocesing = QPixmap.fromImage(image)
                     self.setPixmap(pixmap_postprocesing)
-                    #self.frame_updated.emit(input_frame)
+                    #self.frame_updated.emit(input_frame) #slows down performance
+                    result_frame = input_frame
                     floor_power = akida_device.soc.power_meter.floor
                     print(f'Floor power: {floor_power:.2f} mW')
                     model_stats_obj = akida_model_objectdet.statistics
@@ -235,7 +238,7 @@ class MainWindow(QMainWindow):
 
         self.video_display = VideoDisplay(self)
         self.video_display_2 = ImageDisplay(self)
-        self.video_display.frame_updated.connect(self.video_display_2.display_frame)
+        #self.video_display.frame_updated.connect(self.video_display_2.display_frame) # too slow
 
         self.start_stop_button = QPushButton("Start/Stop Inspection", self)
         self.load_detection_model_button = QPushButton("Load Object Detection Model", self)
@@ -533,4 +536,5 @@ if __name__ == '__main__':
     window.setWindowTitle("NeuroInspect - Powered by Brainchip and Edge Impulse")
     window.setGeometry(0, 0, 1920, 1080)
     window.show()
+    window.video_display_2.display_frame(result_frame)
     sys.exit(app.exec_())
