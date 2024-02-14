@@ -130,6 +130,7 @@ class VideoDisplay(QLabel):
                     print(f'Floor power: {floor_power:.2f} mW')
                     model_stats_obj = akida_model_objectdet.statistics
                     print(model_stats_obj)
+                    window.video_display_2.display_frame(result_frame)
 
                       
             
@@ -536,5 +537,4 @@ if __name__ == '__main__':
     window.setWindowTitle("NeuroInspect - Powered by Brainchip and Edge Impulse")
     window.setGeometry(0, 0, 1920, 1080)
     window.show()
-    window.video_display_2.display_frame(result_frame)
     sys.exit(app.exec_())
