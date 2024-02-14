@@ -240,7 +240,8 @@ class MainWindow(QMainWindow):
         self.exit_button = QPushButton(QIcon.fromTheme('SP_TitleBarCloseButton'), 'Exit', self)
         self.stats_group_box = QGroupBox("Statistics and Diagnostics", self)
         self.stats_label = QLabel("No statistics available", self)
-        self.output_group_box = QGroupBox("Object Detection Output", self)
+        self.output_group_box = QGroupBox("Logs", self)
+        self.results_model_box = QGroupBox("Results",self)
         self.output_label = QLabel("No output available", self)
         self.mode_group_box = QGroupBox("Mode", self)
         self.object_detection_checkbox = QCheckBox("Object Detection", self)
@@ -292,6 +293,7 @@ class MainWindow(QMainWindow):
 
         
         video_displays_layout.addWidget(self.video_display_2, 1)
+        video_displays_layout.addWidget(self.results_model_box,1)
 
         main_layout.addLayout(video_displays_layout)
 
