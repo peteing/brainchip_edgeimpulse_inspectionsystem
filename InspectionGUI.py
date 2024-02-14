@@ -36,6 +36,7 @@ class VideoDisplay(QLabel):
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         border_color_1 = QColor(0, 0, 0)  # Black color
         border_width_1 = 2  # You can adjust the border width
+        self.count = 0
         
 
         # Check if the webcam is opened successfully
@@ -116,6 +117,7 @@ class VideoDisplay(QLabel):
                 print("object detected")
                 for detection in result['bounding_boxes']:
                     label, x,y,width,height, value = detection.values()
+                    self.count = self.count+1
                     input_w, input_h, _ = frame.shape
                     ml_w, ml_h, _ = input_frame.shape
                     scale_w = int(input_w/ml_w)
@@ -133,6 +135,8 @@ class VideoDisplay(QLabel):
                     model_stats_obj = akida_model_objectdet.statistics
                     print(model_stats_obj)
                     window.video_display_2.display_frame(result_frame)
+                    tc = f"Object Detection Count: {self.count} "
+                    window.object_count.setText(tc)
 
                       
             
