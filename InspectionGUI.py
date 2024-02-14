@@ -125,7 +125,8 @@ class VideoDisplay(QLabel):
                     self.frame_updated.emit(input_frame)
                     floor_power = akida_device.soc.power_meter.floor
                     print(f'Floor power: {floor_power:.2f} mW')
-
+                    model_stats_obj = akida_model_objectdet.statistics()
+                    print(model_stats_obj)
 
                       
             
