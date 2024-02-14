@@ -14,7 +14,7 @@ from PyQt5.QtCore import pyqtSignal, QObject
 
 # Global variables (yeah I know)
 mode_objdet = True
-mode_classify = False
+mode_classify = True
 
 akida_device = None
 akida_model_objectdet = None
@@ -95,10 +95,13 @@ class VideoDisplay(QLabel):
         print(offset)
         #input_frame = cv2.resize(frame,(akida_model_objectdet_inshape[0],akida_model_objectdet_inshape[1]) ) # We need to resize the frame to the input layer of the Akida
         input_frame_temp = frame[0:480,80:(80+480) ]
+
         input_frame = cv2.resize(input_frame_temp,(akida_model_objectdet_inshape[0],akida_model_objectdet_inshape[1]) )
+        input_frame_class = cv2.resize(input_frame_temp,(160,160) )
+
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         input_frame_akida = np.expand_dims(input_frame, axis=0) # this needed to create the correct input tesnsor for the Akida which includes a batch size of 1 in this case
-        
+        input_frame_akida_class= np.expand_dims(input_frame_class, axis=0)
 
         #Object Detection
         if mode_objdet and not mode_classify:
@@ -135,9 +138,9 @@ class VideoDisplay(QLabel):
             
         
         #Classification
-        if mode_classify and not mode_objdet:
+        if mode_classify: 
             akida_model_classify.map(akida_device)
-            classify_out = akida_model_classify.predict(input_frame_akida)
+            classify_out = akida_model_classify.predict(input_frame_akida_class)
             print(classify_out)
 
        
