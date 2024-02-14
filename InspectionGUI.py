@@ -266,6 +266,11 @@ class MainWindow(QMainWindow):
         self.object_detection_checkbox = QCheckBox("Object Detection", self)
         self.classification_checkbox = QCheckBox("Classification", self)
 
+        self.class_res_label = QLabel("No results yet", self)
+        self.objc_res_label = QLabel("No results yet", self)
+        self.object_count = QLabel("No objects detected", self)
+        self.pass_rej = QLabel("None detected", self)
+
         self.init_ui()
 
     def init_ui(self):
@@ -284,6 +289,12 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(self.load_detection_model_button)
         button_layout.addWidget(self.load_classification_model_button)
         button_layout.addWidget(self.exit_button)
+
+        results_layout = QVBoxLayout(self.results_model_box)
+        results_layout.addWidget(self.object_count)
+        results_layout.addWidget(self.objc_res_label)
+        results_layout.addWidget(self.class_res_label)
+        results_layout.addWidget(self.pass_rej)
 
         stats_layout = QVBoxLayout(self.stats_group_box)
         stats_layout.addWidget(self.stats_label)
