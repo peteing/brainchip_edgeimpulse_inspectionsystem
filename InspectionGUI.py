@@ -104,7 +104,7 @@ class VideoDisplay(QLabel):
         input_frame_akida_class= np.expand_dims(input_frame_class, axis=0)
 
         #Object Detection
-        if mode_objdet and not mode_classify:
+        if mode_objdet:
             akida_model_objectdet.map(akida_device)
 
             fomo_out_objdet = akida_model_objectdet.predict(input_frame_akida)
