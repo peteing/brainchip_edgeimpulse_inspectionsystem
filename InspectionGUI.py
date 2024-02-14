@@ -6,7 +6,7 @@ import numpy as np
 from scipy.special import softmax
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QIcon, QColor, QPainter, QPen
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QCheckBox, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QGroupBox, QCheckBox, QFileDialog, QMessageBox,QLineEdit
 from akida import Model
 from akida import devices
 from PyQt5.QtCore import pyqtSignal, QObject
@@ -241,6 +241,16 @@ class MainWindow(QMainWindow):
         self.video_display_2 = ImageDisplay(self)
         #self.video_display.frame_updated.connect(self.video_display_2.display_frame) # too slow
 
+
+        self.objdet_textbox = QLineEdit(self)
+        self.objdet_textbox.setPlaceholderText("Enter target for Object Detection")
+        self.objdet_textbox.textChanged.connect(self.update_target_objdet)
+
+        # Add Classification text box
+        self.classify_textbox = QLineEdit(self)
+        self.classify_textbox.setPlaceholderText("Enter target for Classification")
+        self.classify_textbox.textChanged.connect(self.update_target_classify)
+
         self.start_stop_button = QPushButton("Start/Stop Inspection", self)
         self.load_detection_model_button = QPushButton("Load Object Detection Model", self)
         self.load_classification_model_button = QPushButton("Load Classification Model", self)
@@ -280,11 +290,16 @@ class MainWindow(QMainWindow):
         output_layout = QVBoxLayout(self.output_group_box)
         output_layout.addWidget(self.output_label)
 
+        #mode_layout = QHBoxLayout(self.mode_group_box)
+        #mode_layout.addWidget(self.object_detection_checkbox)
+        #mode_layout.addWidget(self.classification_checkbox)
+
         mode_layout = QHBoxLayout(self.mode_group_box)
         mode_layout.addWidget(self.object_detection_checkbox)
+        mode_layout.addWidget(self.objdet_textbox)  # Add Object Detection text box
         mode_layout.addWidget(self.classification_checkbox)
+        mode_layout.addWidget(self.classify_textbox)  # Add Classification text box
 
-        
 
         # Add the banner label at the top center
         
@@ -321,6 +336,16 @@ class MainWindow(QMainWindow):
         self.exit_button.clicked.connect(self.close_application)
         self.object_detection_checkbox.stateChanged.connect(self.update_objdet_mode)
         self.classification_checkbox.stateChanged.connect(self.update_classify_mode)
+
+    def update_target_objdet(self, text):
+        global target_objdet
+        target_objdet = text
+        print("Target for Object Detection:", target_objdet)
+
+    def update_target_classify(self, text):
+        global target_classify
+        target_classify = text
+        print("Target for Classification:", target_classify)
 
     def toggle_inspection(self):
         self.video_display.inspection_enabled = not self.video_display.inspection_enabled
