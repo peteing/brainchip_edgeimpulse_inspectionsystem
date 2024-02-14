@@ -131,12 +131,20 @@ class VideoDisplay(QLabel):
                     #self.frame_updated.emit(input_frame) #slows down performance
                     result_frame = input_frame
                     self.akida_power = akida_device.soc.power_meter.floor
+                   # self.akida_voltage =akida.
                     #print(f'Floor power: {floor_power:.2f} mW')
                     model_stats_obj = akida_model_objectdet.statistics
                     print(model_stats_obj)
                     window.video_display_2.display_frame(result_frame)
                     tc = f"Object Detection Count: {self.count} "
+                    tr = f"Object Detected: Gear"
+                    tcl = f"Class: Good"
+                    tpr = f"PASSED"
                     window.object_count.setText(tc)
+                    window.objc_res_label.setText(tr)
+                    window.class_res_label.setText(tcl)
+                    window.pass_rej.setText(tpr)
+
 
                       
             
