@@ -118,7 +118,7 @@ class VideoDisplay(QLabel):
                     ml_w, ml_h, _ = input_frame.shape
                     scale_w = int(input_w/ml_w)
                     scale_h = int(input_h/ml_h)
-                    cv2.circle(frame,((scale_w*x)+80,scale_h*y),10,(255,255,255),-1 )
+                    cv2.circle(frame,((scale_w*x)+100,(scale_h*y)+20),10,(255,255,255),-1 )
                     h, w, ch = frame.shape
                     bytes_per_line = ch * w
                     image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
@@ -127,7 +127,7 @@ class VideoDisplay(QLabel):
                     #self.frame_updated.emit(input_frame) #slows down performance
                     result_frame = input_frame
                     self.akida_power = akida_device.soc.power_meter.floor
-                    print(f'Floor power: {floor_power:.2f} mW')
+                    #print(f'Floor power: {floor_power:.2f} mW')
                     model_stats_obj = akida_model_objectdet.statistics
                     print(model_stats_obj)
                     window.video_display_2.display_frame(result_frame)
@@ -251,9 +251,9 @@ class MainWindow(QMainWindow):
         self.classify_textbox.setPlaceholderText("Enter target for Classification")
         self.classify_textbox.textChanged.connect(self.update_target_classify)
 
-        self.start_stop_button = QPushButton("Start/Stop<br>Inspection", self)
-        self.load_detection_model_button = QPushButton("Load<br>Object Detection<br>Model", self)
-        self.load_classification_model_button = QPushButton("Load<br>Classification<br>Model", self)
+        self.start_stop_button = QPushButton("Start/Stop\nInspection", self)
+        self.load_detection_model_button = QPushButton("Load\nObject Detection\nModel", self)
+        self.load_classification_model_button = QPushButton("Load\nClassification\nModel", self)
         self.exit_button = QPushButton(QIcon.fromTheme('SP_TitleBarCloseButton'), 'Exit', self)
         self.stats_group_box = QGroupBox("Akida Power Statistics", self)
         self.stats_label = QLabel("No statistics available", self)
