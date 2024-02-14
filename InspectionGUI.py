@@ -67,7 +67,6 @@ class VideoDisplay(QLabel):
 
             painter.end()
 
-            # Convert the QImage back to a QPixmap
             pixmap_with_border = QPixmap.fromImage(image)
 
             return pixmap_with_border
@@ -107,7 +106,7 @@ class VideoDisplay(QLabel):
 
             fomo_out_objdet = akida_model_objectdet.predict(input_frame_akida)
             pred = softmax(fomo_out_objdet, axis=-1).squeeze()
-            result = fill_result_struct_f32_fomo_obj(pred,1,0.85, categories = ['face'])
+            result = fill_result_struct_f32_fomo_obj(pred,1,0.85, categories = ['gear'])
             print("result")
             print(result)
             if int(result['bounding_boxes_count']) > 0:
