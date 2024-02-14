@@ -122,7 +122,7 @@ class VideoDisplay(QLabel):
                     image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
                     pixmap_postprocesing = QPixmap.fromImage(image)
                     self.setPixmap(pixmap_postprocesing)
-                    self.frame_updated.emit(input_frame)
+                    #self.frame_updated.emit(input_frame)
                     floor_power = akida_device.soc.power_meter.floor
                     print(f'Floor power: {floor_power:.2f} mW')
                     model_stats_obj = akida_model_objectdet.statistics
