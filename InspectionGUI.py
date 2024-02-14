@@ -99,7 +99,7 @@ class VideoDisplay(QLabel):
         input_frame = cv2.resize(input_frame_temp,(akida_model_objectdet_inshape[0],akida_model_objectdet_inshape[1]) )
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         input_frame_akida = np.expand_dims(input_frame, axis=0) # this needed to create the correct input tesnsor for the Akida which includes a batch size of 1 in this case
-        counter = counter + 1
+        
 
         #Object Detection
         if mode_objdet and not mode_classify:
@@ -126,7 +126,7 @@ class VideoDisplay(QLabel):
                     self.setPixmap(pixmap_postprocesing)
                     #self.frame_updated.emit(input_frame) #slows down performance
                     result_frame = input_frame
-                    floor_power = akida_device.soc.power_meter.floor
+                    counter = akida_device.soc.power_meter.floor
                     print(f'Floor power: {floor_power:.2f} mW')
                     model_stats_obj = akida_model_objectdet.statistics
                     print(model_stats_obj)
