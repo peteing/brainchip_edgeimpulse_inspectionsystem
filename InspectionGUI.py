@@ -119,7 +119,7 @@ class VideoDisplay(QLabel):
                     cv2.circle(frame,((scale_w*x)+80,scale_h*y),10,(255,255,255),-1 )
                     h, w, ch = frame.shape
                     bytes_per_line = ch * w
-                    image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
+                    image = QImage(frame_rgb.data, w, h, bytes_per_line, QImage.Format_RGB888)
                     pixmap_postprocesing = QPixmap.fromImage(image)
                     self.setPixmap(pixmap_postprocesing)
                     self.frame_updated.emit(input_frame)
@@ -293,7 +293,7 @@ class MainWindow(QMainWindow):
 
         
         video_displays_layout.addWidget(self.video_display_2, 1)
-        #video_displays_layout.addWidget(self.results_model_box,1)
+        video_displays_layout.addWidget(self.results_model_box,1)
 
         main_layout.addLayout(video_displays_layout)
 
