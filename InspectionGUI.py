@@ -431,6 +431,8 @@ class MainWindow(QMainWindow):
     def close_application(self):
         self.close()
 
+#Utility functions
+
 def ei_cube_check_overlap(c, x, y, width, height, confidence):
     is_overlapping = not ((c['x'] + c['width'] < x) or (c['y'] + c['height'] < y) or (c['x'] > x + width) or (c['y'] > y + height))
 
